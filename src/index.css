@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    @apply font-sans;
+  }
+  
+  /* RTL support */
+  html[dir="rtl"] {
+    body {
+      direction: rtl;
+    }
+    
+    /* Adjust padding and margins for RTL */
+    .rtl-pl-0 {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    
+    .rtl-pr-0 {
+      padding-right: 0 !important;
+      padding-left: 0 !important;
+    }
+    
+    .rtl-ml-2 {
+      margin-left: 0 !important;
+      margin-right: 0.5rem !important;
+    }
+    
+    .rtl-mr-2 {
+      margin-right: 0 !important;
+      margin-left: 0.5rem !important;
+    }
+    
+    .rtl-text-right {
+      text-align: right !important;
+    }
+    
+    .rtl-text-left {
+      text-align: left !important;
+    }
+  }
+}
+
+/* color */
+@theme {
+  --color-Primary: #002624; 
+  --color-borderColor : #EAEAEA;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Smooth transitions for language switching */
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Animation for language switcher */
+.language-switcher {
+  transition: transform 0.3s ease-in-out;
+}
+
+.language-switcher:hover {
+  transform: scale(1.05);
+}
+
+.language-switcher:active {
+  transform: scale(0.95);
+}
