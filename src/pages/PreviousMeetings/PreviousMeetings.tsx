@@ -3,145 +3,95 @@ import SearchComponent from "../../components/SearchComponent/SearchComponent";
 import PeriodSelector from "../../components/PerformanceAnalytics/PeriodSelector";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
-import { meetings } from "../../data/tabel";
 import TableOver from "../../components/IncomingRequests/TabelOver";
 import { useTranslation } from '../../hooks/useTranslation';
 import { motion } from 'framer-motion';
 import StateBtn from "../../components/ui/Buttons/StateBtn";
 import { Download } from "lucide-react";
+import api from "../../services/axiosConfig";
 
 // Define the API response type
-interface Appointment {
+interface PreviousMeeting {
   id: string;
   subject: string;
-  priority: string;
+  visitor_name: string;
+  importance: string;
+  date_time: string;
   status: string;
-  start_at: string;
-  // ... other fields
+}
+
+interface PreviousMeetingsResponse {
+  range: string;
+  items: PreviousMeeting[];
 }
 
 export default function PreviousMeetings() {
   const [search, setSearch] = useState("");
   const [period, setPeriod] = useState("All"); // Default to "All" as requested
   const [currentPage, setCurrentPage] = useState(1);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [meetings, setMeetings] = useState<PreviousMeeting[]>([]);
   const [loading, setLoading] = useState(true);
-  const [useMockData, setUseMockData] = useState(false);
   const navigate = useNavigate();
   const t = useTranslation();
 
+  // Map UI period options to API range values
+  const periodToRangeMap: Record<string, string> = {
+    [t.all]: "all",
+    [t.today]: "today",
+    [t.thisWeek]: "week",
+    [t.thisMonth]: "month"
+  };
+  
   const periodOptions = [t.all, t.today, t.thisWeek, t.thisMonth]; // Add "All" option
   const itemsPerPage = 7;
 
-  // Fetch appointments from API
+  // Fetch meetings from API
   useEffect(() => {
-    const fetchAppointments = async () => {
+    const fetchMeetings = async () => {
       try {
         setLoading(true);
-        // Simple fetch implementation
-        const tokens = localStorage.getItem('auth_tokens');
-        const headers: Record<string, string> = {
-          'Content-Type': 'application/json',
-        };
         
-        if (tokens) {
-          const parsedTokens = JSON.parse(tokens);
-          if (parsedTokens.access) {
-            headers['Authorization'] = `Bearer ${parsedTokens.access}`;
-          }
-        }
+        // Get the range value for the API call
+        const rangeValue = periodToRangeMap[period] || "all";
         
-        const response = await fetch('/appointments/api/admin/requests/', {
-          headers
-        });
+        const response = await api.get<PreviousMeetingsResponse>(
+          `/appointments/api/admin/meetings/previous/?range=${rangeValue}`
+        );
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        // Just use the data as-is, don't overthink the format
-        setAppointments(Array.isArray(data) ? data : []);
+        setMeetings(response.data.items);
       } catch (err) {
-        console.error("Error fetching appointments:", err);
-        // Fallback to mock data if API fails
-        setUseMockData(true);
+        console.error("Error fetching previous meetings:", err);
+        setMeetings([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAppointments();
-  }, []);
-
-  // Determine which data to use (API or mock)
-  const dataSource: any = useMockData ? meetings : appointments;
+    fetchMeetings();
+  }, [period]);
 
   // Transform data for display
   const displayData = useMemo(() => {
-    if (useMockData) {
-      // Use mock data as-is
-      return dataSource;
-    } else {
-      // Transform API data to match expected format
-      return (dataSource as Appointment[]).map(appointment => ({
-        id: appointment.id,
-        title: appointment.subject || 'Untitled Meeting',
-        importance: appointment.priority || 'medium',
-        state: appointment.status || 'pending',
-        date: appointment.start_at ? new Date(appointment.start_at).toLocaleDateString() : 'N/A',
-        time: appointment.start_at ? new Date(appointment.start_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A'
-      }));
-    }
-  }, [dataSource, useMockData]);
+    return meetings.map(meeting => ({
+      id: meeting.id,
+      title: meeting.subject || 'Untitled Meeting',
+      importance: meeting.importance || 'medium',
+      state: meeting.status || 'pending',
+      date: meeting.date_time ? new Date(meeting.date_time).toLocaleDateString() : 'N/A',
+      time: meeting.date_time ? new Date(meeting.date_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A'
+    }));
+  }, [meetings]);
 
   const filteredData = useMemo(() => {
     const lowerSearch = search.toLowerCase();
 
     // Apply search filter
-    const searchedData = displayData.filter((item: any) =>
+    return displayData.filter((item: any) =>
       Object.values(item).some((value) =>
         String(value).toLowerCase().includes(lowerSearch)
       )
     );
-
-    // If "All" is selected, return all data
-    if (period === t.all || period === "All") {
-      return searchedData;
-    }
-
-    // Apply date filtering for other periods
-    const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfWeek = new Date(startOfDay);
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    return searchedData.filter((item: any) => {
-      if (!item.date) return false;
-      
-      // For mock data, date is already a string
-      // For API data, we've converted it to a readable format
-      const itemDate = new Date(item.date);
-      
-      if (isNaN(itemDate.getTime())) return false;
-      
-      switch (period) {
-        case t.today:
-          return itemDate >= startOfDay && 
-                 itemDate < new Date(startOfDay.getFullYear(), startOfDay.getMonth(), startOfDay.getDate() + 1);
-        case t.thisWeek:
-          const endOfWeek = new Date(startOfWeek);
-          endOfWeek.setDate(endOfWeek.getDate() + 7);
-          return itemDate >= startOfWeek && itemDate < endOfWeek;
-        case t.thisMonth:
-          const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-          return itemDate >= startOfMonth && itemDate < endOfMonth;
-        default:
-          return true;
-      }
-    });
-  }, [displayData, period, search, t]);
+  }, [displayData, search]);
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -155,7 +105,7 @@ export default function PreviousMeetings() {
     setCurrentPage(1);
   }, [search, period]);
 
-  if (loading && !useMockData) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="text-lg">{t.loading}</div>

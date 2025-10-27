@@ -7,11 +7,27 @@ import { useNavigate } from "react-router-dom";
 import TabelSelect from "../../components/TabelSelect/TabelSelect";
 import TableOver from "../../components/IncomingRequests/TabelOver";
 import Calendar from "../../components/Calendar/Calendar";
-import { meetings, meetingsData } from "../../data/tabel";
 import CalendarHeader from '../../components/Calendar/CalendarHeader';
 import { getWeeksFromDate } from '../../utils/getWeeksOfMonth';
 import Pagination from '../../components/Pagination/Pagination';
 import { motion } from "framer-motion";
+import api from "../../services/axiosConfig";
+import type { MeetingCalender } from "../../types";
+
+// Define the API response type
+interface UpcomingMeeting {
+  id: string;
+  subject: string;
+  visitor_name: string;
+  importance: string;
+  date_time: string;
+  status: string;
+}
+
+interface UpcomingMeetingsResponse {
+  range: string;
+  items: UpcomingMeeting[];
+}
 
 export default function Upcoming() {
   const t = useTranslation();
@@ -20,22 +36,24 @@ export default function Upcoming() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('list');
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
+  const [meetings, setMeetings] = useState<UpcomingMeeting[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
 
+  // Map UI period options to API range values
+  const periodToRangeMap: Record<string, string> = {
+    [t.today]: "today",
+    [t.tomorrow]: "tomorrow",
+    [t.week]: "week",
+    [t.month]: "month"
+  };
+
   // توليد الأسابيع بدءاً من اليوم
   const weeks = useMemo(() => {
     const today = new Date();
-    console.log('Generating weeks from today:', today);
-    const generatedWeeks = getWeeksFromDate(today, 52);
-    console.log('Generated weeks:', generatedWeeks.map(w => ({
-      week: w.week,
-      start: w.startDate.toDateString(),
-      end: w.endDate.toDateString(),
-      days: w.days.map(d => d.toDateString())
-    })));
-    return generatedWeeks;
+    return getWeeksFromDate(today, 52);
   }, []);
 
   // البحث عن الأسبوع الحالي عند التحميل
@@ -50,29 +68,85 @@ export default function Upcoming() {
       
       if (currentWeekIndex !== -1) {
         setCurrentWeekIndex(currentWeekIndex);
-        console.log('Found current week at index:', currentWeekIndex);
       }
     }
   }, [weeks]);
+
+  // Fetch meetings from API
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      try {
+        setLoading(true);
+        
+        // Get the range value for the API call
+        const rangeValue = periodToRangeMap[period] || "today";
+        
+        const response = await api.get<UpcomingMeetingsResponse>(
+          `/appointments/api/admin/meetings/upcoming/?range=${rangeValue}`
+        );
+        
+        setMeetings(response.data.items);
+      } catch (err) {
+        console.error("Error fetching upcoming meetings:", err);
+        setMeetings([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMeetings();
+  }, [period]);
+
+  // Transform data for display
+  const displayData = useMemo(() => {
+    return meetings.map(meeting => ({
+      id: meeting.id,
+      title: meeting.subject || 'Untitled Meeting',
+      importance: meeting.importance || 'medium',
+      state: meeting.status || 'pending',
+      date: meeting.date_time ? new Date(meeting.date_time).toLocaleDateString() : 'N/A',
+      time: meeting.date_time ? new Date(meeting.date_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A'
+    }));
+  }, [meetings]);
+
+  // Transform data for calendar
+  const calendarData = useMemo(() => {
+    return meetings.map(meeting => {
+      const date = meeting.date_time ? new Date(meeting.date_time) : new Date();
+      return {
+        id: parseInt(meeting.id.replace(/[^0-9]/g, '')) || 1, // Simple ID conversion
+        title: meeting.subject || 'Untitled Meeting',
+        visitor: meeting.visitor_name || 'Unknown Visitor',
+        time: meeting.date_time ? new Date(meeting.date_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A',
+        date: date.toDateString(),
+        status: meeting.status as "Accepted" | "Canceled" | "Pending" || "Pending",
+        week: 1, // This would need to be calculated properly
+        day: date.toLocaleDateString("en-US", { weekday: "long" })
+      } as MeetingCalender;
+    });
+  }, [meetings]);
 
   const handleAddMeeting = () => {
     navigate("/admin/addNewMeeting");
   };
 
+  const paginatedMeetings = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return displayData.slice(startIndex, endIndex);
+  }, [currentPage, displayData]);
+
+  const totalPages = Math.ceil(displayData.length / itemsPerPage);
+
   // دالة محسنة لتصفية الاجتماعات حسب الأسبوع
   const getMeetingsByWeek = (weekIndex: number) => {
     if (!weeks[weekIndex]) {
-      console.log('Week not found at index:', weekIndex);
       return [];
     }
 
     const currentWeek = weeks[weekIndex];
-    console.log(`Filtering meetings for week ${weekIndex}:`, {
-      weekRange: `${currentWeek.startDate.toDateString()} to ${currentWeek.endDate.toDateString()}`,
-      days: currentWeek.days.map(d => d.toDateString())
-    });
-
-    const filteredMeetings = meetingsData.filter(m => {
+    
+    return calendarData.filter(m => {
       const meetingDate = new Date(m.date);
       const normalizedMeetingDate = new Date(
         meetingDate.getFullYear(),
@@ -90,63 +164,23 @@ export default function Upcoming() {
         return normalizedMeetingDate.getTime() === normalizedWeekDay.getTime();
       });
 
-      if (isInWeek) {
-        console.log('Found meeting:', m, 'for date:', meetingDate.toDateString());
-      }
-
       return isInWeek;
     });
-
-    console.log(`Found ${filteredMeetings.length} meetings for week ${weekIndex}`);
-    return filteredMeetings;
   };
 
   // البيانات المراد عرضها في الكاليندر
   const filteredMeetingsForCalendar = useMemo(
     () => getMeetingsByWeek(currentWeekIndex),
-    [currentWeekIndex, weeks]
+    [currentWeekIndex, weeks, calendarData]
   );
 
-  const getMeetingsByPeriod = (period: string) => {
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-
-    switch (period) {
-      case t.today:
-        return meetings.filter(
-          m => m.date && new Date(m.date).toDateString() === today.toDateString()
-        );
-      case t.tomorrow:
-        return meetings.filter(
-          m => m.date && new Date(m.date).toDateString() === tomorrow.toDateString()
-        );
-      case t.week:
-        {
-          const currentWeekNumber = 1;   
-          return meetings.filter(m => m.week === currentWeekNumber);
-        }
-
-      case t.month:{
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
-        return meetings.filter(m => m.date && new Date(m.date).getMonth() === currentMonth && new Date(m.date).getFullYear() === currentYear);
-      }
-
-      default:
-        return meetings;
-    }
-  };
-
-  const filteredMeetings = useMemo(() => getMeetingsByPeriod(period), [period]);
-
-  const paginatedMeetings = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return filteredMeetings.slice(startIndex, endIndex);
-  }, [currentPage, filteredMeetings]);
-
-  const totalPages = Math.ceil(filteredMeetings.length / itemsPerPage);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-lg">{t.loading}</div>
+      </div>
+    );
+  }
 
   return (
     <section className="flex flex-col gap-8">
