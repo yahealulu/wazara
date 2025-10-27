@@ -71,6 +71,128 @@ interface Appointment {
   updated_at: string;
 }
 
+// New component to display appointment details
+const AppointmentDetails = ({ appointment }: { appointment: Appointment }) => {
+  const t = useTranslation();
+  
+  // Function to format date
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString();
+  };
+  
+  // Function to render a detail item
+  const renderDetailItem = (label: string, value: string | number | null | undefined) => {
+    if (!value) return null;
+    return (
+      <div className="flex justify-between py-2 border-b border-gray-100">
+        <span className="font-medium text-gray-600">{label}:</span>
+        <span className="text-gray-800">{value}</span>
+      </div>
+    );
+  };
+  
+  return (
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#F5F5F5]">
+      <h3 className="text-lg font-semibold mb-4">{t.meetingDetails}</h3>
+      
+      <div className="space-y-3">
+        {renderDetailItem("Subject", appointment.subject)}
+        {renderDetailItem("Purpose", appointment.purpose)}
+        {renderDetailItem("Importance", appointment.importance)}
+        {renderDetailItem("Attendees Count", appointment.attendees_count)}
+        {renderDetailItem("Preferred Slot", appointment.preferred_slot ? formatDate(appointment.preferred_slot) : null)}
+        {renderDetailItem("Confirmed Slot", appointment.confirmed_slot ? formatDate(appointment.confirmed_slot) : null)}
+        {renderDetailItem("Duration", `${appointment.duration_min} minutes`)}
+        {renderDetailItem("Priority", appointment.priority)}
+        {renderDetailItem("Is Special", appointment.is_special ? "Yes" : "No")}
+        {renderDetailItem("Notes Summary", appointment.notes_summary)}
+        {renderDetailItem("Last Edit Request Message", appointment.last_edit_request_message)}
+        {renderDetailItem("Last Edit Requested At", appointment.last_edit_requested_at ? formatDate(appointment.last_edit_requested_at) : null)}
+        {renderDetailItem("Visitor Description", appointment.visitor_description)}
+        {renderDetailItem("Scheduled By Role", appointment.scheduled_by_role)}
+        {renderDetailItem("Reason", appointment.reason)}
+        
+        {/* Requester Information */}
+        <div className="pt-4">
+          <h4 className="font-semibold text-gray-700 mb-2">Requester Information</h4>
+          <div className="pl-4 space-y-2">
+            {renderDetailItem("Full Name", appointment.requester.full_name)}
+            {renderDetailItem("Email", appointment.requester.email)}
+            {renderDetailItem("Phone", appointment.requester.phone)}
+            {renderDetailItem("Role", appointment.requester.role)}
+          </div>
+        </div>
+        
+        {/* Attachments */}
+        {appointment.attachments && appointment.attachments.length > 0 && (
+          <div className="pt-4">
+            <h4 className="font-semibold text-gray-700 mb-2">{t.attachments}</h4>
+            <div className="pl-4">
+              {appointment.attachments.map((attachment) => (
+                <div key={attachment.id} className="flex justify-between py-2 border-b border-gray-100">
+                  <span className="text-gray-800">{attachment.name}</span>
+                  <a 
+                    href={attachment.file_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    Download
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Intro Files */}
+        {appointment.intro_files && appointment.intro_files.length > 0 && (
+          <div className="pt-4">
+            <h4 className="font-semibold text-gray-700 mb-2">Intro Files</h4>
+            <div className="pl-4">
+              {appointment.intro_files.map((file: any) => (
+                <div key={file.id} className="flex justify-between py-2 border-b border-gray-100">
+                  <span className="text-gray-800">{file.title || file.file_url}</span>
+                  <a 
+                    href={file.file_url || file.file} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    View
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Presentation Files */}
+        {appointment.presentation_files && appointment.presentation_files.length > 0 && (
+          <div className="pt-4">
+            <h4 className="font-semibold text-gray-700 mb-2">Presentation Files</h4>
+            <div className="pl-4">
+              {appointment.presentation_files.map((file: any) => (
+                <div key={file.id} className="flex justify-between py-2 border-b border-gray-100">
+                  <span className="text-gray-800">{file.title || file.file_url}</span>
+                  <a 
+                    href={file.file_url || file.file} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    View
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default function UpcomingDetails() {
     const { id } = useParams<{ id: string }>();
     const [openModal, setOpenModal] = useState(false);
@@ -80,6 +202,7 @@ export default function UpcomingDetails() {
   
     const t = useTranslation();
     const tabs = [
+        { id: "details", label: "Details", component: <AppointmentDetails appointment={appointment!} /> },
         { id: "goals", label: t.goalsAndImportance, component: <Goals /> },
         { id: "attendance", label: t.attendance, component: <Attendance /> },
         { id: "Introduction", label: t.introduction, component: <Intro /> },
@@ -92,31 +215,12 @@ export default function UpcomingDetails() {
         try {
             setLoading(true);
             // Try to fetch the specific appointment by ID
-            const response = await api.get(`/appointments/api/admin/requests/${id}/`);
+            const response = await api.get<Appointment>(`/appointments/api/admin/requests/${id}/`);
             setAppointment(response.data);
             setError(null);
         } catch (err: any) {
             console.error("Error fetching appointment:", err);
-            // If the specific endpoint doesn't work, fall back to fetching all and filtering
-            if (err.response?.status === 404) {
-            try {
-                const allResponse = await api.get(`/appointments/api/admin/requests/`);
-                const appointments: Appointment[] = allResponse.data;
-                const foundAppointment = appointments.find(app => app.id === id);
-                
-                if (foundAppointment) {
-                setAppointment(foundAppointment);
-                setError(null);
-                } else {
-                setError("Appointment not found");
-                }
-            } catch (fetchAllErr) {
-                console.error("Error fetching all appointments:", fetchAllErr);
-                setError("Failed to load appointment details");
-            }
-            } else {
             setError("Failed to load appointment details");
-            }
         } finally {
             setLoading(false);
         }
