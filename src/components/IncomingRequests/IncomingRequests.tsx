@@ -7,6 +7,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { motion } from 'framer-motion';
 import ActionButtonsOverview from "../ui/Buttons/ActionButtonsOverview";
 import api from "../../services/axiosConfig";
+import type { Meeting } from "../../types";
 
 // Define the API response type
 interface UpcomingMeeting {
@@ -26,7 +27,7 @@ interface UpcomingMeetingsResponse {
 export default function IncomingRequests({period} : { period : string}) {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [meetings, setMeetings] = useState<UpcomingMeeting[]>([]);
+  const [meetings, setMeetings] = useState<(UpcomingMeeting | Meeting)[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const t = useTranslation();
 
@@ -78,14 +79,24 @@ export default function IncomingRequests({period} : { period : string}) {
   };
 
   // Transform API data for display to match the expected structure in TabelOver
-  const displayData = meetings.map(meeting => ({
-    id: meeting.id,
-    title: meeting.subject || 'Untitled Meeting',
-    importance: meeting.importance || '',
-    state: meeting.status || 'pending',
-    date: meeting.date_time ? new Date(meeting.date_time).toLocaleDateString() : 'N/A',
-    time: meeting.date_time ? new Date(meeting.date_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A'
-  }));
+  const displayData = meetings.map(meeting => {
+    // Check if it's an API meeting (UpcomingMeeting) or mock data (Meeting)
+    if ('subject' in meeting) {
+      // API meeting
+      return {
+        id: meeting.id,
+        title: meeting.subject || 'Untitled Meeting',
+        importance: meeting.importance || '',
+        state: meeting.status || 'pending',
+        date: meeting.date_time ? new Date(meeting.date_time).toLocaleDateString() : 'N/A',
+        time: meeting.date_time ? new Date(meeting.date_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A',
+        date_time: meeting.date_time // Keep the original date_time for the approval modal
+      } as Meeting & { date_time?: string };
+    } else {
+      // Mock data meeting
+      return meeting as Meeting;
+    }
+  });
 
   if (loading) {
     return (
@@ -138,6 +149,8 @@ export default function IncomingRequests({period} : { period : string}) {
               e.stopPropagation();
               setOpenModal(true);
             }}
+            appointmentId={String(item.id)} // Pass the appointment ID
+            initialDateTime={typeof item.date_time === 'string' ? item.date_time : ""} // Pass the initial date_time for the approval modal
           />
         )}
       />

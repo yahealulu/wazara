@@ -1,14 +1,26 @@
 import React, { useState } from "react";
 import StaffAssignmentModal from "../../Modal/StaffAssignmentModal";
+import RejectionModal from "../../Modal/RejectionModal";
+import ApprovalModal from "../../Modal/ApprovalModal";
 
 interface ActionButtonsOverviewProps {
   onAccept: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onPrimary: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onReject: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  appointmentId?: string;
+  initialDateTime?: string;
 }
 
-export default function ActionButtonsOverview({ onAccept, onPrimary, onReject }: ActionButtonsOverviewProps) {
+export default function ActionButtonsOverview({ 
+  onAccept, 
+  onPrimary, 
+  onReject,
+  appointmentId,
+  initialDateTime
+}: ActionButtonsOverviewProps) {
   const [showStaffModal, setShowStaffModal] = useState(false);
+  const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   
   const handleAcceptClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -19,6 +31,32 @@ export default function ActionButtonsOverview({ onAccept, onPrimary, onReject }:
   const handleAssign = (selectedStaffIds: string[]) => {
     // Handle the staff assignment logic here
     setShowStaffModal(false);
+    // We don't want to trigger navigation, so we don't call onAccept here
+  };
+
+  const handleRejectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowRejectionModal(true);
+  };
+
+  const handleApproveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowApprovalModal(true);
+  };
+
+  const handleRejection = (reason: string) => {
+    // Handle the rejection logic here
+    console.log("Rejected with reason:", reason);
+    setShowRejectionModal(false);
+    // We don't want to trigger navigation, so we don't call onReject here
+  };
+
+  const handleApproval = (confirmedSlot: string) => {
+    // Handle the approval logic here
+    console.log("Approved with confirmed slot:", confirmedSlot);
+    setShowApprovalModal(false);
     // We don't want to trigger navigation, so we don't call onAccept here
   };
 
@@ -38,30 +76,22 @@ export default function ActionButtonsOverview({ onAccept, onPrimary, onReject }:
           />
         </button>
         
-        {/* Primary button */}
+        {/* Primary button (Approve) */}
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onPrimary(e);
-          }}
+          onClick={handleApproveClick}
           className="flex items-center justify-center w-9 h-9 transition-all duration-200 focus:outline-none"
-          aria-label="Primary"
+          aria-label="Approve"
         >
           <img 
             src="/src/assets/icons/Primary Button Lg.svg" 
-            alt="Primary" 
+            alt="Approve" 
             className="w-full h-full"
           />
         </button>
         
         {/* Reject button */}
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onReject(e);
-          }}
+          onClick={handleRejectClick}
           className="flex items-center justify-center w-9 h-9 transition-all duration-200 focus:outline-none"
           aria-label="Reject"
         >
@@ -74,11 +104,34 @@ export default function ActionButtonsOverview({ onAccept, onPrimary, onReject }:
       </div>
       
       {/* Staff Assignment Modal */}
-      <StaffAssignmentModal 
-        isOpen={showStaffModal}
-        onCancel={() => setShowStaffModal(false)}
-        onAssign={handleAssign}
-      />
+      {showStaffModal && (
+        <StaffAssignmentModal 
+          isOpen={showStaffModal}
+          onCancel={() => setShowStaffModal(false)}
+          onAssign={handleAssign}
+        />
+      )}
+      
+      {/* Rejection Modal */}
+      {showRejectionModal && appointmentId && (
+        <RejectionModal
+          isOpen={showRejectionModal}
+          onCancel={() => setShowRejectionModal(false)}
+          onReject={handleRejection}
+          appointmentId={appointmentId}
+        />
+      )}
+      
+      {/* Approval Modal */}
+      {showApprovalModal && appointmentId && initialDateTime && (
+        <ApprovalModal
+          isOpen={showApprovalModal}
+          onCancel={() => setShowApprovalModal(false)}
+          onApprove={handleApproval}
+          appointmentId={appointmentId}
+          initialDateTime={initialDateTime}
+        />
+      )}
     </>
   );
 }
