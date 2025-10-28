@@ -1,5 +1,5 @@
 import PerformanceAnalyticsTime from "./PerformanceAnalyticsTime";
-import PerformanceAnalyticsData from "./PerformanceAnalyticsData";
+import AnalyticsData from "./AnalyticsData";
 
 type PerformanceAnalyticsProps = {
   period: string;
@@ -10,7 +10,7 @@ export default function PerformanceAnalytics({period , onPeriodChange} : Perform
   return (
     <div className=" p-10 w-full rounded-2xl flex flex-col gap-8 border border-[#F5F5F5]  shadow shadow-black/5">
       <PerformanceAnalyticsTime time={period} selected={period} onChange={onPeriodChange} />
-      <PerformanceAnalyticsData period={period}/>
+      <AnalyticsData period={period}/>
     </div>
   )
 }

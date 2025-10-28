@@ -25,6 +25,7 @@ export default function PerformanceAnalyticsTime({
     }
   };
   
+  // Updated period options to match the requirement
   const periodOptions = [t.today, t.thisWeek, t.thisMonth];
   
   return (
@@ -42,11 +43,15 @@ export default function PerformanceAnalyticsTime({
         selected={getTimeLabel(selected)}
         onChange={(newPeriod) => {
           // Map translated period back to English for internal logic
-          const englishPeriod = Object.keys(periodOptions).find(
-            key => periodOptions[key as unknown as number] === newPeriod
-          ) ? 
-          ["Today", "Last Week", "Last Month"][periodOptions.indexOf(newPeriod)] :
-          newPeriod;
+          let englishPeriod = newPeriod;
+          
+          if (newPeriod === t.today) {
+            englishPeriod = "Today";
+          } else if (newPeriod === t.thisWeek) {
+            englishPeriod = "Last Week";
+          } else if (newPeriod === t.thisMonth) {
+            englishPeriod = "Last Month";
+          }
           
           onChange(englishPeriod);
         }}
