@@ -138,7 +138,7 @@ export default function Upcoming() {
 
   const totalPages = Math.ceil(displayData.length / itemsPerPage);
 
-  // دالة محسنة لتصفية الاجتماعات حسب الأسبوع
+  // دالة محسوبة لتصفية الاجتماعات حسب الأسبوع
   const getMeetingsByWeek = (weekIndex: number) => {
     if (!weeks[weekIndex]) {
       return [];
