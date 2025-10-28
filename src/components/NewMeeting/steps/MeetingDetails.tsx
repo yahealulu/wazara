@@ -9,6 +9,8 @@ type MeetingDetailsData = {
   reasons: string;
   importance: string;
   files: File[];
+  presentationFiles: File[];
+  introFiles: File[];
   links: string[];
 };
 
@@ -28,10 +30,16 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
   const [meeting, setMeeting] = useState<MeetingDetailsData>({
     ...initialData,
     files: initialData.files || [],
+    presentationFiles: initialData.presentationFiles || [],
+    introFiles: initialData.introFiles || [],
     links: initialData.links || [],
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const presentationFileInputRef = useRef<HTMLInputElement>(null);
+  const introFileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragType, setDragType] = useState<'general' | 'presentation' | 'intro'>('general');
   const formData = meetingFormData[0];
   const t = useTranslation();
   const translate = (key: string) => t[key as keyof typeof t] ?? key;
@@ -44,6 +52,70 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
     onNext();
+  };
+
+  // Handle drag events
+  const handleDragEnter = (e: React.DragEvent, type: 'general' | 'presentation' | 'intro') => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+    setDragType(type);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent, type: 'general' | 'presentation' | 'intro') => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    setDragType('general');
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const newFiles = Array.from(e.dataTransfer.files);
+      if (type === 'general') {
+        setMeeting({
+          ...meeting,
+          files: [...meeting.files, ...newFiles],
+        });
+      } else if (type === 'presentation') {
+        setMeeting({
+          ...meeting,
+          presentationFiles: [...meeting.presentationFiles, ...newFiles],
+        });
+      } else if (type === 'intro') {
+        setMeeting({
+          ...meeting,
+          introFiles: [...meeting.introFiles, ...newFiles],
+        });
+      }
+      e.dataTransfer.clearData();
+    }
+  };
+
+  // Remove file handlers
+  const removeFile = (index: number, type: 'general' | 'presentation' | 'intro') => {
+    if (type === 'general') {
+      const newFiles = [...meeting.files];
+      newFiles.splice(index, 1);
+      setMeeting({ ...meeting, files: newFiles });
+    } else if (type === 'presentation') {
+      const newFiles = [...meeting.presentationFiles];
+      newFiles.splice(index, 1);
+      setMeeting({ ...meeting, presentationFiles: newFiles });
+    } else if (type === 'intro') {
+      const newFiles = [...meeting.introFiles];
+      newFiles.splice(index, 1);
+      setMeeting({ ...meeting, introFiles: newFiles });
+    }
   };
 
   return (
@@ -101,37 +173,223 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
         {translate(formData.attachments.subTitle)}
       </p>
 
-      <div className="mb-4 relative">
-  <Label text={translate(formData.attachments.form[0].label)} />
-        <input
-          type="text"
-          placeholder={translate(formData.attachments.noFilesText)}
-          value={meeting.files.map((f: File) => f.name).join(", ")}
-          readOnly
-          className="w-full border p-2 pr-28 rounded-lg bg-white cursor-not-allowed mb-2"
-        />
-        <button
-          type="button"
-          className="absolute right-1 top-13 transform -translate-y-1/2 bg-[#F0F6F6] text-[#002624] px-4 py-1 rounded-lg hover:bg-gray-200"
+      {/* General Files */}
+      <div className="mb-6">
+        <Label text="General Files" />
+        <div 
+          className={`mb-2 relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+            isDragging && dragType === 'general' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+          }`}
+          onDragEnter={(e) => handleDragEnter(e, 'general')}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => handleDrop(e, 'general')}
           onClick={() => fileInputRef.current?.click()}
         >
-          + {translate(formData.attachments.uploadButtonText)}
-        </button>
-        <input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          multiple
-          onChange={(e) => {
-            if (e.target.files) {
-              const newFiles = Array.from(e.target.files);
-              setMeeting({
-                ...meeting,
-                files: [...meeting.files, ...newFiles],
-              });
-            }
-          }}
-        />
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            multiple
+            onChange={(e) => {
+              if (e.target.files) {
+                const newFiles = Array.from(e.target.files);
+                setMeeting({
+                  ...meeting,
+                  files: [...meeting.files, ...newFiles],
+                });
+              }
+            }}
+          />
+          <div className="flex flex-col items-center justify-center">
+            <svg 
+              className="w-12 h-12 text-gray-400 mb-3" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              ></path>
+            </svg>
+            <p className="text-gray-600 mb-1">
+              {isDragging && dragType === 'general' ? 'Drop general files here' : 'Drag & drop general files here or click to browse'}
+            </p>
+            <p className="text-gray-400 text-sm">
+              Supported formats: PDF, DOC, DOCX, JPG, PNG
+            </p>
+          </div>
+        </div>
+
+        {meeting.files.length > 0 && (
+          <div className="mb-4">
+            <h4 className="font-medium text-gray-700 mb-2">Uploaded General Files:</h4>
+            <ul className="space-y-2">
+              {meeting.files.map((file, index) => (
+                <li key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
+                  <span className="text-sm truncate">{file.name}</span>
+                  <button
+                    type="button"
+                    className="text-red-500 hover:text-red-700"
+                    onClick={() => removeFile(index, 'general')}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Presentation Files */}
+      <div className="mb-6">
+        <Label text="Presentation Files" />
+        <div 
+          className={`mb-2 relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+            isDragging && dragType === 'presentation' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+          }`}
+          onDragEnter={(e) => handleDragEnter(e, 'presentation')}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => handleDrop(e, 'presentation')}
+          onClick={() => presentationFileInputRef.current?.click()}
+        >
+          <input
+            type="file"
+            ref={presentationFileInputRef}
+            className="hidden"
+            multiple
+            onChange={(e) => {
+              if (e.target.files) {
+                const newFiles = Array.from(e.target.files);
+                setMeeting({
+                  ...meeting,
+                  presentationFiles: [...meeting.presentationFiles, ...newFiles],
+                });
+              }
+            }}
+          />
+          <div className="flex flex-col items-center justify-center">
+            <svg 
+              className="w-12 h-12 text-gray-400 mb-3" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              ></path>
+            </svg>
+            <p className="text-gray-600 mb-1">
+              {isDragging && dragType === 'presentation' ? 'Drop presentation files here' : 'Drag & drop presentation files here or click to browse'}
+            </p>
+            <p className="text-gray-400 text-sm">
+              Supported formats: PDF, PPT, PPTX
+            </p>
+          </div>
+        </div>
+
+        {meeting.presentationFiles.length > 0 && (
+          <div className="mb-4">
+            <h4 className="font-medium text-gray-700 mb-2">Uploaded Presentation Files:</h4>
+            <ul className="space-y-2">
+              {meeting.presentationFiles.map((file, index) => (
+                <li key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
+                  <span className="text-sm truncate">{file.name}</span>
+                  <button
+                    type="button"
+                    className="text-red-500 hover:text-red-700"
+                    onClick={() => removeFile(index, 'presentation')}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Intro Files */}
+      <div className="mb-6">
+        <Label text="Intro Files" />
+        <div 
+          className={`mb-2 relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+            isDragging && dragType === 'intro' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+          }`}
+          onDragEnter={(e) => handleDragEnter(e, 'intro')}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => handleDrop(e, 'intro')}
+          onClick={() => introFileInputRef.current?.click()}
+        >
+          <input
+            type="file"
+            ref={introFileInputRef}
+            className="hidden"
+            multiple
+            onChange={(e) => {
+              if (e.target.files) {
+                const newFiles = Array.from(e.target.files);
+                setMeeting({
+                  ...meeting,
+                  introFiles: [...meeting.introFiles, ...newFiles],
+                });
+              }
+            }}
+          />
+          <div className="flex flex-col items-center justify-center">
+            <svg 
+              className="w-12 h-12 text-gray-400 mb-3" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              ></path>
+            </svg>
+            <p className="text-gray-600 mb-1">
+              {isDragging && dragType === 'intro' ? 'Drop intro files here' : 'Drag & drop intro files here or click to browse'}
+            </p>
+            <p className="text-gray-400 text-sm">
+              Supported formats: PDF, DOC, DOCX
+            </p>
+          </div>
+        </div>
+
+        {meeting.introFiles.length > 0 && (
+          <div className="mb-4">
+            <h4 className="font-medium text-gray-700 mb-2">Uploaded Intro Files:</h4>
+            <ul className="space-y-2">
+              {meeting.introFiles.map((file, index) => (
+                <li key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
+                  <span className="text-sm truncate">{file.name}</span>
+                  <button
+                    type="button"
+                    className="text-red-500 hover:text-red-700"
+                    onClick={() => removeFile(index, 'intro')}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end mt-10">

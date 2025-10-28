@@ -8,16 +8,19 @@ interface DateTimeProps {
   initialData: any;
 }
 
-const times = [
-  "9:00 AM",
-  "9:30 AM",
-  "10:00 AM",
-  "10:30 AM",
-  "11:00 AM",
-  "11:30 AM",
-  "12:00 PM",
-  "12:30 PM",
-];
+// Generate time slots from 9:00 AM to 4:00 PM in 30-minute intervals
+const generateTimeSlots = () => {
+  const times = [];
+  const timeLabels = [
+    "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", 
+    "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM",
+    "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM",
+    "3:00 PM", "3:30 PM", "4:00 PM"
+  ];
+  return timeLabels;
+};
+
+const times = generateTimeSlots();
 
 const DateTime: React.FC<DateTimeProps> = ({
   onNext,
@@ -95,6 +98,20 @@ const DateTime: React.FC<DateTimeProps> = ({
     } else setCurrentMonth(currentMonth + 1);
   };
 
+  // Check if a date is in the past (before today)
+  const isPastDate = (day: number) => {
+    const date = new Date(currentYear, currentMonth, day);
+    const todayWithoutTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    return date < todayWithoutTime;
+  };
+
+  // Check if a date is today
+  const isToday = (day: number) => {
+    return day === today.getDate() &&
+      currentMonth === today.getMonth() &&
+      currentYear === today.getFullYear();
+  };
+
   return (
     <form onSubmit={handleNext}>
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -109,6 +126,7 @@ const DateTime: React.FC<DateTimeProps> = ({
               type="button"
               onClick={prevMonth}
               className="text-3xl font-bold text-[#002624] hover:text-[#01534f] focus:outline-none"
+              disabled={currentMonth === today.getMonth() && currentYear === today.getFullYear()}
             >
               &lt;
             </button>
@@ -135,21 +153,17 @@ const DateTime: React.FC<DateTimeProps> = ({
               day ? (
                 <div
                   key={idx}
-                  onClick={() => selectDate(day)}
+                  onClick={() => !isPastDate(day) && selectDate(day)}
                   className={`
                     cursor-pointer flex items-center justify-center 
                     w-8 h-8 mx-auto rounded-full text-sm transition-all
-                    ${
-                      dateTime.date ===
-                      new Date(currentYear, currentMonth, day)
-                        .toISOString()
-                        .split("T")[0]
-                        ? "bg-[#002624] text-white"
-                        : day === today.getDate() &&
-                          currentMonth === today.getMonth() &&
-                          currentYear === today.getFullYear()
-                        ? "border-2 border-[#002624] text-[#002624]"
-                        : "hover:bg-[#002624] hover:text-white"
+                    ${isPastDate(day) 
+                      ? "text-gray-300 cursor-not-allowed" 
+                      : dateTime.date === new Date(currentYear, currentMonth, day).toISOString().split("T")[0]
+                      ? "bg-[#002624] text-white"
+                      : isToday(day)
+                      ? "border-2 border-[#002624] text-[#002624]"
+                      : "hover:bg-[#002624] hover:text-white"
                     }
                   `}
                 >
@@ -164,17 +178,17 @@ const DateTime: React.FC<DateTimeProps> = ({
 
         <div className="scale-90">
           <div className="flex flex-col gap-2">
-            {times.map((t) => (
+            {times.map((time) => (
               <div
-                key={t}
+                key={time}
                 className={`cursor-pointer border rounded-lg p-2 text-center text-sm transition-all ${
-                  dateTime.time === t
+                  dateTime.time === time
                     ? "bg-[#002624] text-white"
                     : "hover:bg-[#002624] hover:text-white"
                 }`}
-                onClick={() => setDateTime({ ...dateTime, time: t })}
+                onClick={() => setDateTime({ ...dateTime, time: time })}
               >
-                {t}
+                {time}
               </div>
             ))}
           </div>
@@ -192,6 +206,7 @@ const DateTime: React.FC<DateTimeProps> = ({
         <button
           type="submit"
           className="bg-[#002624] text-white px-24 py-2 rounded-lg hover:bg-[#01534f]"
+          disabled={!dateTime.date || !dateTime.time}
         >
           {t.next}
         </button>

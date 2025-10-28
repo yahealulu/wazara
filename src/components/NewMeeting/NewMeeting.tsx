@@ -11,6 +11,7 @@ interface FormData {
     email: string;
     phone: string;
     numberOfAttendance: number;
+    description: string;
     attendants: { name: string; email: string; phone: string }[];
     links: string[];
     files: File[];
@@ -20,6 +21,8 @@ interface FormData {
     reasons: string;
     importance: string;
     files: File[];
+    presentationFiles: File[];
+    introFiles: File[];
     links: string[];
   };
   dateTime: {
@@ -39,6 +42,7 @@ const NewMeeting: React.FC = () => {
       email: "",
       phone: "",
       numberOfAttendance: 0,
+      description: "",
       attendants: [],
       links: [],
       files: [],
@@ -48,6 +52,8 @@ const NewMeeting: React.FC = () => {
       reasons: "",
       importance: "",
       files: [],
+      presentationFiles: [],
+      introFiles: [],
       links: [],
     },
     dateTime: {

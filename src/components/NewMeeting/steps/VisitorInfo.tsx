@@ -14,6 +14,7 @@ interface Visitor {
   phone: string;
   email: string;
   numberOfAttendance: number;
+  description: string;
   attendants: Attendant[];
   links: string[];
   files: File[];
@@ -32,6 +33,7 @@ const VisitorInfo: React.FC<VisitorInfoProps> = ({
 }) => {
   const [visitor, setVisitor] = useState<Visitor>({
     ...initialData,
+    description: initialData.description || "",
     attendants: initialData.attendants || [{ name: "", email: "", phone: "" }],
     links: initialData.links || [],
     files: initialData.files || [],
@@ -43,6 +45,18 @@ const VisitorInfo: React.FC<VisitorInfoProps> = ({
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
+    // Basic validation
+    if (!visitor.name || !visitor.phone || !visitor.email || visitor.numberOfAttendance <= 0) {
+      alert("Please fill in all required fields");
+      return;
+    }
+    
+    // Validate visitor description length
+    if (visitor.description.trim().split(/\s+/).length < 20) {
+      alert("Please provide at least 20 words describing the visitor and purpose.");
+      return;
+    }
+    
     onNext();
   };
 
@@ -91,7 +105,7 @@ const VisitorInfo: React.FC<VisitorInfoProps> = ({
           <Input
             type="number"
             placeholder={t.numberOfAttendancePlaceholder}
-            value={visitor.numberOfAttendance}
+            value={visitor.numberOfAttendance || ""}
             onChange={(e) =>
               setVisitor({
                 ...visitor,
@@ -100,6 +114,18 @@ const VisitorInfo: React.FC<VisitorInfoProps> = ({
             }
             className="mb-2"
           />
+        </div>
+        <div className="col-span-2">
+          <Label text="Visitor Description" />
+          <textarea
+            placeholder="Please provide a description about the visitor and the purpose of their visit"
+            value={visitor.description}
+            onChange={(e) => setVisitor({ ...visitor, description: e.target.value })}
+            className="w-full border border-borderColor p-3 rounded-lg placeholder:text-sm placeholder:text-[#737373] min-h-[120px]"
+          />
+          <p className="text-sm text-gray-500 mt-1">
+            Please provide at least 20 words describing the visitor and purpose.
+          </p>
         </div>
       </div>
 
