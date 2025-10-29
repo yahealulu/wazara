@@ -24,7 +24,7 @@ const ProtectedRoute = () => {
   }
   
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
   
   return <Outlet />;
@@ -32,11 +32,11 @@ const ProtectedRoute = () => {
 
 const router = createBrowserRouter([
     {
-        path: "/", 
-        element: <Navigate to="/login" replace />, 
+        path: "/admin/", 
+        element: <Navigate to="/admin/login" replace />, 
     },
     {
-        path: '/login',
+        path: '/admin/login',
         element: (
           <AuthWrapper>
             <AuthPage />
@@ -44,11 +44,11 @@ const router = createBrowserRouter([
         )
     },
     {
-        path: '/home',
+        path: '/admin/home',
         element: <Home/>
     },
     {
-        path: '/admin',
+        path: '/admin/admin',
         element: (
           <AuthWrapper>
             <ProtectedRoute />
