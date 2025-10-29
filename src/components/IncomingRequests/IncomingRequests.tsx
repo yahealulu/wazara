@@ -129,7 +129,7 @@ export default function IncomingRequests({period} : { period : string}) {
           { key: "date", label: `${t.date} & ${t.time}` },
         ]}
         hideActions={false}
-        onRowClick={(id) => navigate(`/admin/meetingDetails/${id}`)}
+        onRowClick={(id) => navigate(`/admin/admin/meetingDetails/${id}`)}
         renderActions={(item) => (
           <ActionButtonsOverview
             onAccept={(e) => {

@@ -11,7 +11,8 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
       : "bg-red-100 text-red-700";
   const navigate = useNavigate()
   return (
-    <div onClick={() => navigate(`/admin/upcomingDetails/${meeting.id}`)}  className="p-4  flex flex-col justify-between gap-6 h-[128px]  border border-borderColor w-full rounded-xl bg-white shadow-sm">
+    <div onClick={() => navigate(`/admin/admin/upcomingDetails/${meeting.id}`)}
+      className="p-4  flex flex-col justify-between gap-6 h-[128px]  border border-borderColor w-full rounded-xl bg-white shadow-sm">
       <div>
         <p className="font-semibold mb-1 text-sm">{meeting.title}</p>
         <p className="text-[#737373] text-xs">{meeting.visitor}</p>

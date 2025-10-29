@@ -7,6 +7,7 @@ const PROXY_TARGET = process.env.VITE_API_BASE_URL || 'http://localhost:8088';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/admin/',
   plugins: [
     react(),
     tailwindcss(),
@@ -25,6 +26,6 @@ export default defineConfig({
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),
       }
-    }
+    },
   }
 })

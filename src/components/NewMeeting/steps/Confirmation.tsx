@@ -101,7 +101,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({ onPrev, formData }) => {
   const closePopup = () => {
     setShowPopup(false);
     // Navigate to upcoming meetings page after successful submission
-    navigate("/admin/upcoming");
+    navigate("/admin/admin/upcoming");
   };
 
   const closeError = () => {

@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       setUser(response.user);
       setIsAuthenticated(true);
-      navigate('/admin');
+      navigate('/admin/admin');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     authService.logout();
     setUser(null);
     setIsAuthenticated(false);
-    navigate('/login');
+    navigate('/admin/login');
   };
 
   return (

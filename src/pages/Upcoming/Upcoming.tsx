@@ -127,7 +127,7 @@ export default function Upcoming() {
   }, [meetings]);
 
   const handleAddMeeting = () => {
-    navigate("/admin/addNewMeeting");
+    navigate("/admin/admin/addNewMeeting");
   };
 
   const paginatedMeetings = useMemo(() => {
@@ -218,7 +218,7 @@ export default function Upcoming() {
               { key: "importance", label: t.importance },
               { key: "date", label: `${t.date} & ${t.time}` },
             ]}
-            onRowClick={(id) => navigate(`/admin/upcomingDetails/${id}`)}
+            onRowClick={(id) => navigate(`/admin/admin/upcomingDetails/${id}`)}
             data={paginatedMeetings}
           />
 

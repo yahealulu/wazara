@@ -143,7 +143,7 @@ export default function PreviousMeetings() {
             { key: "date", label: `${t.date} & ${t.time}` },
           ]}
           data={paginatedData as any}
-          onRowClick={(id) => navigate(`/admin/previousDetails/${id}`)}
+          onRowClick={(id) => navigate(`/admin/admin/previousDetails/${id}`)}
         />
       </motion.div>
 
