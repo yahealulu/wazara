@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import StateBtn from "../ui/Buttons/StateBtn";
 import { useTranslation } from "../../hooks/useTranslation";
 

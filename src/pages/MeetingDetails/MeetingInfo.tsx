@@ -75,7 +75,6 @@ export default function MeetingInfo({ appointment }: MeetingInfoProps) {
 
   const isPreviousDetails = location.pathname.startsWith("/admin/previousDetails/");
   const isUpcoming = location.pathname.startsWith("/admin/upcomingDetails/");
-  const isRequest = !isPreviousDetails && !isUpcoming;
 
   // Format date and time for display if appointment data is available
   let formattedDate = "Tuesday, 30 Sep";

@@ -1,4 +1,3 @@
-import { useTranslation } from '../../hooks/useTranslation';
 
 interface PeriodSelectorProps {
   selected: string;
@@ -7,7 +6,6 @@ interface PeriodSelectorProps {
 }
 
 export default function PeriodSelector({ selected, onChange, options }: PeriodSelectorProps) {
-  const t = useTranslation();
 
   return (
     <div className="flex items-center gap-3">

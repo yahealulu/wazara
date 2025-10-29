@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FiEdit2, FiPlus, FiCheckCircle, FiAlertCircle, FiEye, FiEyeOff, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from '../../hooks/useTranslation';
 import api from '../../services/axiosConfig';
 
 // Define the user type based on the API response
@@ -18,12 +17,10 @@ interface User {
 }
 
 const StaffManagement: React.FC = () => {
-  const t = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCreateAdminModal, setShowCreateAdminModal] = useState(false);
   const [showCreateScannerModal, setShowCreateScannerModal] = useState(false);
@@ -81,6 +78,9 @@ const StaffManagement: React.FC = () => {
         ...response.data.scanners
       ];
 
+      const start = (page - 1) * size;
+      const end = start + size;
+      setStaffMembers(allUsers.slice(start, end));
       setTotalItems(allUsers.length);
       setStaffMembers(allUsers);
       setError(null);

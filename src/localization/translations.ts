@@ -506,10 +506,7 @@ export const enTranslations: Translations = {
     "Meeting's Cause & Goals Meeting's Cause & Goals Meeting's Cause & Goals Meeting's Cause & Goals Meeting's Cause & Goals Meeting's Cause & Goals.",
 
   // Common
-  search: "Search",
-  actions: "Actions",
   loading: "Loading...",
-  noData: "No data available",
 
   // Visitor Info Form
   visitorInfoTitle: "Visitor Information",

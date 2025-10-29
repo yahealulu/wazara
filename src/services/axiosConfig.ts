@@ -1,9 +1,12 @@
 import axios from 'axios';
 import authService from './authService';
 
+// Use environment variable for base URL, with fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8088";
+
 // Create axios instance with the proxy base URL
 const api = axios.create({
-  baseURL: '/api', // This will use the proxy
+  baseURL: API_BASE_URL,     
   headers: {
     'Content-Type': 'application/json',
   },

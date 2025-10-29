@@ -12,9 +12,6 @@ interface ActionButtonsOverviewProps {
 }
 
 export default function ActionButtonsOverview({ 
-  onAccept, 
-  onPrimary, 
-  onReject,
   appointmentId,
   initialDateTime
 }: ActionButtonsOverviewProps) {
@@ -29,7 +26,7 @@ export default function ActionButtonsOverview({
   };
   
   const handleAssign = (selectedStaffIds: string[]) => {
-    // Handle the staff assignment logic here
+    console.log("Assigned staff IDs:", selectedStaffIds);
     setShowStaffModal(false);
     // We don't want to trigger navigation, so we don't call onAccept here
   };
