@@ -34,7 +34,7 @@ const authService = {
     try {
       const response = await api.post('/auth/api/login/?actor=superadmin', credentials);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
       throw error;
     }

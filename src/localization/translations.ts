@@ -257,6 +257,8 @@ export interface Translations {
   signOut: string;
   noData: string;
   NewMeeting: string;
+  invalidCredentials: string;
+  loginError: string;
 }
 
 export const enTranslations: Translations = {
@@ -456,6 +458,8 @@ export const enTranslations: Translations = {
 
   signOut: "Sign Out",
   noData: "No data available",
+  invalidCredentials: "Invalid phone number or password",
+  loginError: "An error occurred during login",
 
   // Importance Levels
   high: "High",
@@ -777,6 +781,8 @@ export const arTranslations: Translations = {
   actions: "إجراءات",
 
   noData: "لا توجد بيانات متاحة",
+  invalidCredentials: "رقم الهاتف أو كلمة المرور غير صحيحة",
+  loginError: "حدث خطأ أثناء تسجيل الدخول",
 
   // Visitor Info Form
   visitorInfoTitle: "معلومات الزائر",

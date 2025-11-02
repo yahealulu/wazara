@@ -40,6 +40,21 @@
       text-align: left !important;
     }
   }
+  
+  /* Fix for phone number display in RTL */
+  .bidi-embed {
+    unicode-bidi: embed;
+  }
+  
+  .bidi-override {
+    unicode-bidi: bidi-override;
+  }
+  
+  .phone-number {
+    unicode-bidi: embed;
+    direction: ltr;
+    text-align: left;
+  }
 }
 
 /* color */

@@ -83,7 +83,7 @@ const VisitorInfo: React.FC<VisitorInfoProps> = ({
         <div>
           <Label text={t.phoneNumber} />
           <Input
-            type="text"
+            type="tel"
             placeholder={t.phonePlaceholder}
             value={visitor.phone}
             onChange={(e) => setVisitor({ ...visitor, phone: e.target.value })}

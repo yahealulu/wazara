@@ -17,12 +17,15 @@ export default function AuthField({ label, input, value, onChange }: AuthFieldPr
     onChange(input.id, e.target.value);
   };
 
+  // Use tel type for phone numbers
+  const inputType = input.id.includes('Phone') ? 'tel' : input.type;
+
   return (
     <div className="mb-6 w-full">
       <Label text={label} htmlFor={input.id} />
       <Input 
         id={input.id}
-        type={input.type}
+        type={inputType}
         placeholder={input.placeholder}
         value={value}
         onChange={handleChange}

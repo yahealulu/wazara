@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface User {
   id: string;
@@ -11,6 +12,7 @@ interface User {
   id_number: string | null;
   role: string;
   scopes: string[];
+  
 }
 
 interface AuthContextType {
@@ -30,6 +32,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const t = useTranslation();
 
   useEffect(() => {
     // Check if user is already logged in
@@ -67,7 +70,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsAuthenticated(true);
       navigate('/admin/admin');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      // Handle error messages
+      if (err.response && err.response.status === 400) {
+        setError(t.invalidCredentials || 'Invalid phone number or password');
+      } else {
+        setError(t.loginError || 'An error occurred during login');
+      }
+      navigate('/admin/login');
     } finally {
       setIsLoading(false);
     }
@@ -77,6 +86,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     authService.logout();
     setUser(null);
     setIsAuthenticated(false);
+    setError(null);
     navigate('/admin/login');
   };
 

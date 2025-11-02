@@ -20,11 +20,11 @@ export default function NavLinkAdmin({ isCollapsed = false }: NavLinkAdminProps)
     icon: JSX.Element;
   };  
   const navItems: NavItem[] = [
-    { name: t.overview, path: "/admin/overview", icon: <TbBrandSpeedtest size={20} /> },
-    { name: t.upcomingMeetings, path: "/admin/upcoming", icon: <BiCalendar size={20} /> },
-    { name: t.previousMeetings, path: "/admin/previous", icon: <LuCalendarClock size={20} /> },
-    { name: t.visitorsCheckIns, path: "/admin/visitors", icon: <BiLogIn size={18} /> },
-    { name: "Staff Management", path: "/admin/staff", icon: <FaUsers size={20} /> },
+    { name: t.overview, path: "/admin/admin/overview", icon: <TbBrandSpeedtest size={20} /> },
+    { name: t.upcomingMeetings, path: "/admin/admin/upcoming", icon: <BiCalendar size={20} /> },
+    { name: t.previousMeetings, path: "/admin/admin/previous", icon: <LuCalendarClock size={20} /> },
+    { name: t.visitorsCheckIns, path: "/admin/admin/visitors", icon: <BiLogIn size={18} /> },
+    { name: "Staff Management", path: "/admin/admin/staff", icon: <FaUsers size={20} /> },
   ];
   
   return (

@@ -8,7 +8,7 @@ const LanguageToggle: React.FC = () => {
   return (
     <div className={`absolute top-6 ${language === 'ar' ? 'left-6' : 'right-6'}`}>
       <motion.div
-        className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-lg flex items-center justify-center cursor-pointer"
+        className="w-12 h-12 bg-gradient-to-br from-[#002624] to-[#002624] rounded-lg shadow-lg flex items-center justify-center cursor-pointer"
         onClick={toggleLanguage}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}

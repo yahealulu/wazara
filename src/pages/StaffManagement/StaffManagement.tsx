@@ -930,7 +930,7 @@ const StaffManagement: React.FC = () => {
                 <label className="block text-sm font-medium mb-2">Phone Number</label>
                 <input
                   type="tel"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 phone-number"
                   placeholder="+XXX - XXXXXXXXX"
                   value={adminPhone}
                   onChange={(e) => setAdminPhone(e.target.value)}
@@ -1015,7 +1015,7 @@ const StaffManagement: React.FC = () => {
                 <label className="block text-sm font-medium mb-2">Phone Number</label>
                 <input
                   type="tel"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 phone-number"
                   placeholder="+XXX - XXXXXXXXX"
                   value={scannerPhone}
                   onChange={(e) => setScannerPhone(e.target.value)}
@@ -1100,7 +1100,7 @@ const StaffManagement: React.FC = () => {
                 <label className="block text-sm font-medium mb-2">Phone Number</label>
                 <input
                   type="tel"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 phone-number"
                   placeholder="+XXX - XXXXXXXXX"
                   value={staffPhone}
                   onChange={(e) => setStaffPhone(e.target.value)}

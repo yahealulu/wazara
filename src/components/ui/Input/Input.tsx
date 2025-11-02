@@ -1,3 +1,5 @@
+import { useLocalization } from '../../../contexts/LocalizationContext';
+
 interface InputType {
   placeholder: string;
   type: string;
@@ -6,6 +8,7 @@ interface InputType {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
 }
+
 export default function Input({
   placeholder,
   type,
@@ -14,6 +17,14 @@ export default function Input({
   onChange,
   className,
 }: InputType) {
+  const { language } = useLocalization();
+  
+  // Add special handling for phone numbers in Arabic
+  const isPhoneNumber = type === 'tel' || (id && (id.includes('Phone') || id.includes('phone')));
+  const inputClassName = `rounded-lg w-full border border-borderColor p-3 placeholder:text-sm placeholder:text-[#737373] ${
+    isPhoneNumber && language === 'ar' ? 'phone-number' : ''
+  } ${className || ""}`;
+
   return (
     <input
       type={type}
@@ -21,9 +32,7 @@ export default function Input({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className={`rounded-lg w-full border border-borderColor p-3 placeholder:text-sm placeholder:text-[#737373] ${
-        className || ""
-      }`}
+      className={inputClassName}
     />
   );
 }
