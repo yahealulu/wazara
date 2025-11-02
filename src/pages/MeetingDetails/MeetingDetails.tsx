@@ -91,30 +91,30 @@ const AppointmentDetails = ({ appointment }: { appointment: Appointment }) => {
       <h3 className="text-lg font-semibold mb-4">{t.meetingDetails}</h3>
       
       <div className="space-y-3">
-        {renderDetailItem("Subject", appointment.subject)}
-        {renderDetailItem("Purpose", appointment.purpose)}
-        {renderDetailItem("Importance", appointment.importance)}
-        {renderDetailItem("Attendees Count", appointment.attendees_count)}
-        {renderDetailItem("Preferred Slot", appointment.preferred_slot ? formatDate(appointment.preferred_slot) : null)}
-        {renderDetailItem("Confirmed Slot", appointment.confirmed_slot ? formatDate(appointment.confirmed_slot) : null)}
-        {renderDetailItem("Duration", `${appointment.duration_min} minutes`)}
-        {renderDetailItem("Priority", appointment.priority)}
-        {renderDetailItem("Is Special", appointment.is_special ? "Yes" : "No")}
-        {renderDetailItem("Notes Summary", appointment.notes_summary)}
-        {renderDetailItem("Last Edit Request Message", appointment.last_edit_request_message)}
-        {renderDetailItem("Last Edit Requested At", appointment.last_edit_requested_at ? formatDate(appointment.last_edit_requested_at) : null)}
-        {renderDetailItem("Visitor Description", appointment.visitor_description)}
-        {renderDetailItem("Scheduled By Role", appointment.scheduled_by_role)}
-        {renderDetailItem("Reason", appointment.reason)}
+        {renderDetailItem(t.subject, appointment.subject)}
+        {renderDetailItem(t.purpose, appointment.purpose)}
+        {renderDetailItem(t.importance, appointment.importance)}
+        {renderDetailItem(t.attendeesCount, appointment.attendees_count)}
+        {renderDetailItem(t.preferredSlot, appointment.preferred_slot ? formatDate(appointment.preferred_slot) : null)}
+        {renderDetailItem(t.confirmedSlot, appointment.confirmed_slot ? formatDate(appointment.confirmed_slot) : null)}
+        {renderDetailItem(t.duration, `${appointment.duration_min} ${t.minutes}`)}
+        {renderDetailItem(t.priority, appointment.priority)}
+        {renderDetailItem(t.isSpecial, appointment.is_special ? t.yes : t.no)}
+        {renderDetailItem(t.notesSummary, appointment.notes_summary)}
+        {renderDetailItem(t.lastEditRequestMessage, appointment.last_edit_request_message)}
+        {renderDetailItem(t.lastEditRequestedAt, appointment.last_edit_requested_at ? formatDate(appointment.last_edit_requested_at) : null)}
+        {renderDetailItem(t.visitorDescriptionDetails, appointment.visitor_description)}
+        {renderDetailItem(t.scheduledByRole, appointment.scheduled_by_role)}
+        {renderDetailItem(t.meetingReasonsGoals, appointment.reason)}
         
         {/* Requester Information */}
         <div className="pt-4">
-          <h4 className="font-semibold text-gray-700 mb-2">Requester Information</h4>
+          <h4 className="font-semibold text-gray-700 mb-2">{t.requesterInformation}</h4>
           <div className="pl-4 space-y-2">
-            {renderDetailItem("Full Name", appointment.requester.full_name)}
-            {renderDetailItem("Email", appointment.requester.email)}
-            {renderDetailItem("Phone", appointment.requester.phone)}
-            {renderDetailItem("Role", appointment.requester.role)}
+            {renderDetailItem(t.fullName, appointment.requester.full_name)}
+            {renderDetailItem(t.email, appointment.requester.email)}
+            {renderDetailItem(t.phoneNumber, appointment.requester.phone)}
+            {renderDetailItem(t.role, appointment.requester.role)}
           </div>
         </div>
         
@@ -132,7 +132,7 @@ const AppointmentDetails = ({ appointment }: { appointment: Appointment }) => {
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:underline"
                   >
-                    Download
+                    {t.download}
                   </a>
                 </div>
               ))}
@@ -143,7 +143,7 @@ const AppointmentDetails = ({ appointment }: { appointment: Appointment }) => {
         {/* Intro Files */}
         {appointment.intro_files && appointment.intro_files.length > 0 && (
           <div className="pt-4">
-            <h4 className="font-semibold text-gray-700 mb-2">Intro Files</h4>
+            <h4 className="font-semibold text-gray-700 mb-2">{t.introFilesDetails}</h4>
             <div className="pl-4">
               {appointment.intro_files.map((file: any) => (
                 <div key={file.id} className="flex justify-between py-2 border-b border-gray-100">
@@ -154,7 +154,7 @@ const AppointmentDetails = ({ appointment }: { appointment: Appointment }) => {
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:underline"
                   >
-                    View
+                    {t.view}
                   </a>
                 </div>
               ))}
@@ -165,7 +165,7 @@ const AppointmentDetails = ({ appointment }: { appointment: Appointment }) => {
         {/* Presentation Files */}
         {appointment.presentation_files && appointment.presentation_files.length > 0 && (
           <div className="pt-4">
-            <h4 className="font-semibold text-gray-700 mb-2">Presentation Files</h4>
+            <h4 className="font-semibold text-gray-700 mb-2">{t.presentationFilesDetails}</h4>
             <div className="pl-4">
               {appointment.presentation_files.map((file: any) => (
                 <div key={file.id} className="flex justify-between py-2 border-b border-gray-100">
@@ -176,7 +176,7 @@ const AppointmentDetails = ({ appointment }: { appointment: Appointment }) => {
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:underline"
                   >
-                    View
+                    {t.view}
                   </a>
                 </div>
               ))}
@@ -233,7 +233,7 @@ export default function MeetingDetails() {
   }
 
   const tabs = [
-    { id: "details", label: "Details", component: <AppointmentDetails appointment={appointment} /> },
+    { id: "details", label: t.meetingDetails, component: <AppointmentDetails appointment={appointment} /> },
     { id: "goals", label: t.goalsAndImportance, component: <Goals/> },
     { id: "attendance", label: t.attendance, component: <Attendance /> },
     { id: "Links & Attachments", label: t.linksAndAttachments, component: <Links /> },

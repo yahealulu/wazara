@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FiEdit2, FiPlus, FiCheckCircle, FiAlertCircle, FiEye, FiEyeOff, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../services/axiosConfig';
+import { useTranslation } from '../../hooks/useTranslation';
 
 // Define the user type based on the API response
 interface User {
@@ -62,6 +63,7 @@ const StaffManagement: React.FC = () => {
   const [staffFormError, setStaffFormError] = useState<string | null>(null);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const t = useTranslation();
 
   // Fetch staff data from API with pagination
   const fetchStaffData = async (page: number = 1, size: number = 10) => {
@@ -191,7 +193,7 @@ const StaffManagement: React.FC = () => {
       await api.delete(endpoint);
 
       // Show success message
-      setSuccessMessage(`${selectedMemberRole === 'admin' ? 'Admin' : selectedMemberRole === 'staff' ? 'Staff member' : 'Scanner'} ${selectedMemberName} deleted successfully!`);
+      setSuccessMessage(`${selectedMemberRole === 'admin' ? t.admin : selectedMemberRole === 'staff' ? t.staff : t.scanner} ${selectedMemberName} ${t.deletedSuccessfully}`);
 
       // Close modal
       setShowDeleteModal(false);
@@ -203,7 +205,7 @@ const StaffManagement: React.FC = () => {
       fetchStaffData(currentPage, pageSize);
     } catch (err: any) {
       console.error('Error deleting user:', err);
-      setError(err.response?.data?.message || 'Failed to delete user. Please try again.');
+      setError(err.response?.data?.message || t.failedToDeleteUser);
       setShowDeleteModal(false);
     }
   };
@@ -221,7 +223,7 @@ const StaffManagement: React.FC = () => {
       });
 
       // Show success message
-      setSuccessMessage('Admin created successfully!');
+      setSuccessMessage(`${t.admin} ${t.createdSuccessfully}`);
 
       // Close modal and reset form
       setShowCreateAdminModal(false);
@@ -261,13 +263,13 @@ const StaffManagement: React.FC = () => {
 
         // If still no error message, use a generic one
         if (!errorMessage) {
-          errorMessage = 'Failed to create admin. Please check your input and try again.';
+          errorMessage = t.failedToCreateAdmin;
         }
 
         setAdminFormError(errorMessage.trim());
       } else {
         // Handle other types of errors
-        setAdminFormError(err.response?.data?.message || 'Failed to create admin. Please try again.');
+        setAdminFormError(err.response?.data?.message || t.failedToCreateAdmin);
       }
     }
   };
@@ -285,7 +287,7 @@ const StaffManagement: React.FC = () => {
       });
 
       // Show success message
-      setSuccessMessage('Scanner created successfully!');
+      setSuccessMessage(`${t.scanner} ${t.createdSuccessfully}`);
 
       // Close modal and reset form
       setShowCreateScannerModal(false);
@@ -325,13 +327,13 @@ const StaffManagement: React.FC = () => {
 
         // If still no error message, use a generic one
         if (!errorMessage) {
-          errorMessage = 'Failed to create scanner. Please check your input and try again.';
+          errorMessage = t.failedToCreateScanner;
         }
 
         setScannerFormError(errorMessage.trim());
       } else {
         // Handle other types of errors
-        setScannerFormError(err.response?.data?.message || 'Failed to create scanner. Please try again.');
+        setScannerFormError(err.response?.data?.message || t.failedToCreateScanner);
       }
     }
   };
@@ -350,7 +352,7 @@ const StaffManagement: React.FC = () => {
       });
 
       // Show success message
-      setSuccessMessage('Staff member created successfully!');
+      setSuccessMessage(`${t.staff} ${t.member} ${t.createdSuccessfully}`);
 
       // Close modal and reset form
       setShowCreateStaffModal(false);
@@ -391,13 +393,13 @@ const StaffManagement: React.FC = () => {
 
         // If still no error message, use a generic one
         if (!errorMessage) {
-          errorMessage = 'Failed to create staff member. Please check your input and try again.';
+          errorMessage = t.failedToCreateStaffMember;
         }
 
         setStaffFormError(errorMessage.trim());
       } else {
         // Handle other types of errors
-        setStaffFormError(err.response?.data?.message || 'Failed to create staff member. Please try again.');
+        setStaffFormError(err.response?.data?.message || t.failedToCreateStaffMember);
       }
     }
   };
@@ -481,13 +483,13 @@ const StaffManagement: React.FC = () => {
 
         // If still no error message, use a generic one
         if (!errorMessage) {
-          errorMessage = 'Failed to update password. Please try again.';
+          errorMessage = t.failedToUpdatePassword;
         }
 
         setPasswordError(errorMessage.trim());
       } else {
         // Handle other types of errors
-        setPasswordError(err.response?.data?.message || 'Failed to update password. Please try again.');
+        setPasswordError(err.response?.data?.message || t.failedToUpdatePassword);
       }
     }
   };
@@ -525,7 +527,7 @@ const StaffManagement: React.FC = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-medium">Staff Management</h1>
+        <h1 className="text-2xl font-medium">{t.staffManagement}</h1>
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={handleAddMember}
@@ -534,32 +536,32 @@ const StaffManagement: React.FC = () => {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 5V19M5 12H19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            Add Member
+            {t.addMember}
           </button>
 
           {showDropdown && (
             <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-10 overflow-hidden">
-              <div className="p-2 text-gray-500 text-sm">Button Menu</div>
+              <div className="p-2 text-gray-500 text-sm">{t.buttonMenu}</div>
               <button
                 onClick={handleAddNewAdmin}
                 className="w-full text-left px-4 py-3 flex items-center gap-2 hover:bg-gray-50 border-t border-gray-100"
               >
                 <FiPlus size={18} />
-                New Admin
+                {t.newAdmin}
               </button>
               <button
                 onClick={handleAddNewStaffMember}
                 className="w-full text-left px-4 py-3 flex items-center gap-2 hover:bg-gray-50 border-t border-gray-100"
               >
                 <FiPlus size={18} />
-                New Staff Member
+                {t.newStaffMember}
               </button>
               <button
                 onClick={handleAddNewScanner}
                 className="w-full text-left px-4 py-3 flex items-center gap-2 hover:bg-gray-50 border-t border-gray-100"
               >
                 <FiPlus size={18} />
-                New Scanner
+                {t.newScanner}
               </button>
             </div>
           )}
@@ -568,7 +570,7 @@ const StaffManagement: React.FC = () => {
 
       {loading && (
         <div className="flex justify-center items-center h-64">
-          <div className="text-lg">Loading staff data...</div>
+          <div className="text-lg">{t.loading}</div>
         </div>
       )}
 
@@ -610,12 +612,12 @@ const StaffManagement: React.FC = () => {
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50 text-left text-gray-600">
-                  <th className="py-3 px-6 font-normal">Name</th>
-                  <th className="py-3 px-6 font-normal">Email</th>
-                  <th className="py-3 px-6 font-normal">Role</th>
-                  <th className="py-3 px-6 font-normal">Phone Number</th>
-                  <th className="py-3 px-6 font-normal">Created At</th>
-                  <th className="py-3 px-6 font-normal">Edit</th>
+                  <th className="py-3 px-6 font-normal">{t.name}</th>
+                  <th className="py-3 px-6 font-normal">{t.email}</th>
+                  <th className="py-3 px-6 font-normal">{t.role}</th>
+                  <th className="py-3 px-6 font-normal">{t.phoneNumber}</th>
+                  <th className="py-3 px-6 font-normal">{t.createdAt}</th>
+                  <th className="py-3 px-6 font-normal">{t.actions}</th>
                 </tr>
               </thead>
               <tbody>
@@ -635,14 +637,14 @@ const StaffManagement: React.FC = () => {
                           className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-md"
                         >
                           <FiEdit2 size={16} />
-                          Edit Password
+                          {t.editPassword}
                         </button>
                         <button
                           onClick={() => handleDelete(member.id, member.full_name, member.role)}
                           className="bg-red-500 text-white px-3 py-2 rounded-md flex items-center gap-1"
                         >
                           <FiTrash2 size={16} />
-                          Delete
+                          {t.deleteMember}
                         </button>
                       </div>
                     </td>
@@ -655,7 +657,7 @@ const StaffManagement: React.FC = () => {
           {/* Pagination */}
           <div className="flex justify-between items-center mt-6">
             <div className="flex items-center gap-2">
-              <span className="text-gray-600">Rows per page:</span>
+              <span className="text-gray-600">{t.rowsPerPage}</span>
               <select
                 value={pageSize}
                 onChange={(e) => handlePageSizeChange(Number(e.target.value))}
@@ -680,7 +682,7 @@ const StaffManagement: React.FC = () => {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Previous
+                {t.previous}
               </button>
 
               {/* Page numbers */}
@@ -724,7 +726,7 @@ const StaffManagement: React.FC = () => {
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
-                Next
+                {t.next}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -752,7 +754,7 @@ const StaffManagement: React.FC = () => {
             className="bg-white rounded-lg p-6 w-full max-w-md"
             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
           >
-            <h2 className="text-xl font-medium mb-6">Edit Password for {selectedMemberName}</h2>
+            <h2 className="text-xl font-medium mb-6">{t.editPasswordFor} {selectedMemberName}</h2>
 
             {passwordError && (
               <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md flex items-center">
@@ -763,12 +765,12 @@ const StaffManagement: React.FC = () => {
 
             <form onSubmit={handleResetPassword}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">New Password</label>
+                <label className="block text-sm font-medium mb-2">{t.newPassword}</label>
                 <div className="relative">
                   <input
                     type={showNewPassword ? "text" : "password"}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10"
-                    placeholder="At Least 8 Characters"
+                    placeholder={t.atLeast8Characters}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
@@ -786,17 +788,17 @@ const StaffManagement: React.FC = () => {
                   </button>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Password must include at least one uppercase letter, one lowercase letter, and one digit.
+                  {t.passwordComplexity}
                 </p>
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Confirm Password</label>
+                <label className="block text-sm font-medium mb-2">{t.confirmNewPassword}</label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10"
-                    placeholder="Confirm New Password"
+                    placeholder={t.confirmNewPassword}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -826,13 +828,13 @@ const StaffManagement: React.FC = () => {
                   }}
                   className="flex-1 border border-gray-300 py-2 rounded-md"
                 >
-                  Cancel
+                  {t.cancel}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 bg-[#002624] text-white py-2 rounded-md"
                 >
-                  Reset Password
+                  {t.resetPassword}
                 </button>
               </div>
             </form>
@@ -855,21 +857,21 @@ const StaffManagement: React.FC = () => {
             className="bg-white rounded-lg p-6 w-full max-w-md"
             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
           >
-            <h2 className="text-xl font-medium mb-2">Confirm Deletion</h2>
-            <p className="text-gray-600 mb-6">Are you sure you want to delete {selectedMemberRole} <strong>{selectedMemberName}</strong>? This action cannot be undone.</p>
+            <h2 className="text-xl font-medium mb-2">{t.confirmDeletion}</h2>
+            <p className="text-gray-600 mb-6">{t.areYouSureDelete} {selectedMemberRole} <strong>{selectedMemberName}</strong>? {t.thisActionCannotBeUndone}</p>
 
             <div className="flex gap-4">
               <button
                 onClick={() => setShowDeleteModal(false)}
                 className="flex-1 border border-gray-300 py-2 rounded-md"
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={handleConfirmDelete}
                 className="flex-1 bg-red-500 text-white py-2 rounded-md"
               >
-                Delete
+                {t.deleteMember}
               </button>
             </div>
           </div>
@@ -892,7 +894,7 @@ const StaffManagement: React.FC = () => {
             className="bg-white rounded-lg p-8 w-full max-w-md mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-medium mb-6">Create New Admin</h2>
+            <h2 className="text-xl font-medium mb-6">{t.createNewAdmin}</h2>
 
             {adminFormError && (
               <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md flex items-center">
@@ -903,11 +905,11 @@ const StaffManagement: React.FC = () => {
 
             <form onSubmit={handleCreateAdminSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <label className="block text-sm font-medium mb-2">{t.fullName}</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="Enter Full Name"
+                  placeholder={t.enterFullName}
                   value={adminFullName}
                   onChange={(e) => setAdminFullName(e.target.value)}
                   required
@@ -915,11 +917,11 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Email Address</label>
+                <label className="block text-sm font-medium mb-2">{t.emailAddress}</label>
                 <input
                   type="email"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="Enter Your Email Address"
+                  placeholder={t.enterYourEmailAddress}
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
                   required
@@ -927,11 +929,11 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Phone Number</label>
+                <label className="block text-sm font-medium mb-2">{t.phoneNumber}</label>
                 <input
                   type="tel"
                   className="w-full border border-gray-300 rounded-md px-3 py-2 phone-number"
-                  placeholder="+XXX - XXXXXXXXX"
+                  placeholder={t.phonePlaceholder}
                   value={adminPhone}
                   onChange={(e) => setAdminPhone(e.target.value)}
                   required
@@ -939,11 +941,11 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Password</label>
+                <label className="block text-sm font-medium mb-2">{t.password}</label>
                 <input
                   type="password"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="At Least 8 Character"
+                  placeholder={t.atLeast8Characters}
                   value={adminPassword}
                   onChange={(e) => setAdminPassword(e.target.value)}
                   required
@@ -954,7 +956,7 @@ const StaffManagement: React.FC = () => {
                 type="submit"
                 className="w-full bg-[#002624] text-white py-3 rounded-md"
               >
-                Create Admin
+                {t.createAdmin}
               </button>
             </form>
           </div>
@@ -977,7 +979,7 @@ const StaffManagement: React.FC = () => {
             className="bg-white rounded-lg p-8 w-full max-w-md mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-medium mb-6">Create New Scanner</h2>
+            <h2 className="text-xl font-medium mb-6">{t.createNewScanner}</h2>
 
             {scannerFormError && (
               <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md flex items-center">
@@ -988,11 +990,11 @@ const StaffManagement: React.FC = () => {
 
             <form onSubmit={handleCreateScannerSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <label className="block text-sm font-medium mb-2">{t.fullName}</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="Enter Full Name"
+                  placeholder={t.enterFullName}
                   value={scannerFullName}
                   onChange={(e) => setScannerFullName(e.target.value)}
                   required
@@ -1000,11 +1002,11 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Email Address</label>
+                <label className="block text-sm font-medium mb-2">{t.emailAddress}</label>
                 <input
                   type="email"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="Enter Your Email Address"
+                  placeholder={t.enterYourEmailAddress}
                   value={scannerEmail}
                   onChange={(e) => setScannerEmail(e.target.value)}
                   required
@@ -1012,11 +1014,11 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Phone Number</label>
+                <label className="block text-sm font-medium mb-2">{t.phoneNumber}</label>
                 <input
                   type="tel"
                   className="w-full border border-gray-300 rounded-md px-3 py-2 phone-number"
-                  placeholder="+XXX - XXXXXXXXX"
+                  placeholder={t.phonePlaceholder}
                   value={scannerPhone}
                   onChange={(e) => setScannerPhone(e.target.value)}
                   required
@@ -1024,11 +1026,11 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Password</label>
+                <label className="block text-sm font-medium mb-2">{t.password}</label>
                 <input
                   type="password"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="At Least 8 Character"
+                  placeholder={t.atLeast8Characters}
                   value={scannerPassword}
                   onChange={(e) => setScannerPassword(e.target.value)}
                   required
@@ -1039,7 +1041,7 @@ const StaffManagement: React.FC = () => {
                 type="submit"
                 className="w-full bg-[#002624] text-white py-3 rounded-md"
               >
-                Create Scanner
+                {t.createScanner}
               </button>
             </form>
           </div>
@@ -1062,7 +1064,7 @@ const StaffManagement: React.FC = () => {
             className="bg-white rounded-lg p-8 w-full max-w-md mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-medium mb-6">Create Staff Member</h2>
+            <h2 className="text-xl font-medium mb-6">{t.createNewStaffMember}</h2>
 
             {staffFormError && (
               <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md flex items-center">
@@ -1073,11 +1075,11 @@ const StaffManagement: React.FC = () => {
 
             <form onSubmit={handleCreateStaffSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <label className="block text-sm font-medium mb-2">{t.fullName}</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="Enter Full Name"
+                  placeholder={t.enterFullName}
                   value={staffFullName}
                   onChange={(e) => setStaffFullName(e.target.value)}
                   required
@@ -1085,11 +1087,11 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Email Address</label>
+                <label className="block text-sm font-medium mb-2">{t.emailAddress}</label>
                 <input
                   type="email"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="Enter Your Email Address"
+                  placeholder={t.enterYourEmailAddress}
                   value={staffEmail}
                   onChange={(e) => setStaffEmail(e.target.value)}
                   required
@@ -1097,11 +1099,11 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Phone Number</label>
+                <label className="block text-sm font-medium mb-2">{t.phoneNumber}</label>
                 <input
                   type="tel"
                   className="w-full border border-gray-300 rounded-md px-3 py-2 phone-number"
-                  placeholder="+XXX - XXXXXXXXX"
+                  placeholder={t.phonePlaceholder}
                   value={staffPhone}
                   onChange={(e) => setStaffPhone(e.target.value)}
                   required
@@ -1109,44 +1111,33 @@ const StaffManagement: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Password</label>
+                <label className="block text-sm font-medium mb-2">{t.password}</label>
                 <input
                   type="password"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="At Least 8 Character"
+                  placeholder={t.atLeast8Characters}
                   value={staffPassword}
                   onChange={(e) => setStaffPassword(e.target.value)}
                   required
                 />
               </div>
 
-              <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Send Invite</label>
-                <div className="flex items-center">
-                  <button
-                    type="button"
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                      staffSendInvite ? 'bg-[#002624]' : 'bg-gray-300'
-                    }`}
-                    onClick={() => setStaffSendInvite(!staffSendInvite)}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        staffSendInvite ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
-                  </button>
-                  <span className="ml-3 text-sm text-gray-700">
-                    {staffSendInvite ? 'Yes' : 'No'}
-                  </span>
-                </div>
+              <div className="mb-4 flex items-center">
+                <input
+                  type="checkbox"
+                  id="sendInvite"
+                  className="mr-2"
+                  checked={staffSendInvite}
+                  onChange={(e) => setStaffSendInvite(e.target.checked)}
+                />
+                <label htmlFor="sendInvite">{t.sendInvite}</label>
               </div>
 
               <button
                 type="submit"
                 className="w-full bg-[#002624] text-white py-3 rounded-md"
               >
-                Create Staff Member
+                {t.createStaffMember}
               </button>
             </form>
           </div>

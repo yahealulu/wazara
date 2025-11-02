@@ -55,36 +55,18 @@ export interface Translations {
   linksAboutMeetingPlaceholder: string;
 
   // Navigation
-  back: string;
-
-  // Stepper Sidebar
-  visitorsInformationStep: string;
-  meetingDetailsStep: string;
-  dateTimeStep: string;
-  confirmationStep: string;
+  overview: string;
+  upcomingMeetings: string;
+  previousMeetings: string;
+  visitorsCheckIns: string;
+  staffManagement: string;
   introduction: string;
-  meetingGoalsTitle: string;
-  meetingGoalsText: string;
-  meetingImportanceTitle: string;
-  meetingImportanceText: string;
-  descriptionTitle: string;
-  descriptionText: string;
-  linksTitle: string;
-  linkLabel: string;
-  attachmentsTitle: string;
-  reportFileLabel: string;
-  summaryFileLabel: string;
   cancelMeeting: string;
   cancelMeetingTitle: string;
   cancelMeetingDescription: string;
   cancelMeetingPlaceholder: string;
   cancelMeetingLabel: string;
   lettersCount: string;
-  // Navigation
-  overview: string;
-  upcomingMeetings: string;
-  previousMeetings: string;
-  visitorsCheckIns: string;
 
   // Header
   ministryName: string;
@@ -259,7 +241,99 @@ export interface Translations {
   NewMeeting: string;
   invalidCredentials: string;
   loginError: string;
-}
+  role: string;
+  createdSuccessfully: string;
+  member: string;
+  failedToCreateAdmin: string;
+  failedToCreateScanner: string;
+  failedToCreateStaffMember: string;
+  failedToUpdatePassword: string;
+  
+  // AddNewMeeting Page Translations
+  visitorDescription: string;
+  visitorDescriptionPlaceholder: string;
+  selectMeetingType: string;
+  normalMeeting: string;
+  specialMeeting: string;
+  standardMeetingRequest: string;
+  specialMeetingRequest: string;
+  generalFiles: string;
+  presentationFiles: string;
+  introFiles: string;
+  dropGeneralFiles: string;
+  dropPresentationFiles: string;
+  dropIntroFiles: string;
+  dragDropGeneral: string;
+  dragDropPresentation: string;
+  dragDropIntro: string;
+  uploadedGeneralFiles: string;
+  uploadedPresentationFiles: string;
+  uploadedIntroFiles: string;
+  remove: string;
+  supportedFormats: string;
+  supportedFormatsPresentation: string;
+  supportedFormatsIntro: string;
+
+  // Meeting Details Page Translations
+  subject: string;
+  purpose: string;
+  attendeesCount: string;
+  preferredSlot: string;
+  confirmedSlot: string;
+  duration: string;
+  priority: string;
+  isSpecial: string;
+  notesSummary: string;
+  lastEditRequestMessage: string;
+  lastEditRequestedAt: string;
+  visitorDescriptionDetails: string;
+  scheduledByRole: string;
+  requesterInformation: string;
+  introFilesDetails: string;
+  presentationFilesDetails: string;
+  download: string;
+  view: string;
+  yes: string;
+  no: string;
+  minutes: string;
+
+  // Staff Management Page Translations
+  staffManagement: string;
+  addMember: string;
+  buttonMenu: string;
+  newAdmin: string;
+  newStaffMember: string;
+  newScanner: string;
+  createdAt: string;
+  editPassword: string;
+  deleteMember: string;
+  rowsPerPage: string;
+  editPasswordFor: string;
+  newPassword: string;
+  atLeast8Characters: string;
+  passwordComplexity: string;
+  confirmNewPassword: string;
+  resetPassword: string;
+  confirmDeletion: string;
+  areYouSureDelete: string;
+  thisActionCannotBeUndone: string;
+  createNewAdmin: string;
+  enterFullName: string;
+  enterYourEmailAddress: string;
+  createAdmin: string;
+  createNewScanner: string;
+  createScanner: string;
+  createNewStaffMember: string;
+  sendInvite: string;
+  createStaffMember: string;
+  admin: string;
+  staff: string;
+  scanner: string;
+  deletedSuccessfully: string;
+  failedToDeleteUser: string;
+  role: "Role";
+  createdSuccessfully: "Created Successfully",
+};
 
 export const enTranslations: Translations = {
   file : "file",
@@ -536,6 +610,96 @@ export const enTranslations: Translations = {
   meetingDetailsStep: "Meeting Details",
   dateTimeStep: "Date & Time",
   confirmationStep: "Confirmation",
+  
+  // AddNewMeeting Page Translations
+  visitorDescription: "Visitor Description",
+  visitorDescriptionPlaceholder: "Please provide at least 20 words describing the visitor and purpose.",
+  selectMeetingType: "Select Meeting Type",
+  normalMeeting: "Normal Meeting",
+  specialMeeting: "Special Meeting",
+  standardMeetingRequest: "Standard meeting request",
+  specialMeetingRequest: "Special meeting request",
+  generalFiles: "General Files",
+  presentationFiles: "Presentation Files",
+  introFiles: "Intro Files",
+  dropGeneralFiles: "Drop general files here",
+  dropPresentationFiles: "Drop presentation files here",
+  dropIntroFiles: "Drop intro files here",
+  dragDropGeneral: "Drag & drop general files here or click to browse",
+  dragDropPresentation: "Drag & drop presentation files here or click to browse",
+  dragDropIntro: "Drag & drop intro files here or click to browse",
+  uploadedGeneralFiles: "Uploaded General Files:",
+  uploadedPresentationFiles: "Uploaded Presentation Files:",
+  uploadedIntroFiles: "Uploaded Intro Files:",
+  remove: "Remove",
+  supportedFormats: "Supported formats: PDF, DOC, DOCX, JPG, PNG",
+  supportedFormatsPresentation: "Supported formats: PDF, PPT, PPTX",
+  supportedFormatsIntro: "Supported formats: PDF, DOC, DOCX",
+
+  // Meeting Details Page Translations
+  subject: "Subject",
+  purpose: "Purpose",
+  attendeesCount: "Attendees Count",
+  preferredSlot: "Preferred Slot",
+  confirmedSlot: "Confirmed Slot",
+  duration: "Duration",
+  priority: "Priority",
+  isSpecial: "Is Special",
+  notesSummary: "Notes Summary",
+  lastEditRequestMessage: "Last Edit Request Message",
+  lastEditRequestedAt: "Last Edit Requested At",
+  visitorDescriptionDetails: "Visitor Description",
+  scheduledByRole: "Scheduled By Role",
+  requesterInformation: "Requester Information",
+  introFilesDetails: "Intro Files",
+  presentationFilesDetails: "Presentation Files",
+  download: "Download",
+  view: "View",
+  yes: "Yes",
+  no: "No",
+  minutes: "minutes",
+
+  // Staff Management Page Translations
+  staffManagement: "Staff Management",
+  addMember: "Add Member",
+  buttonMenu: "Button Menu",
+  newAdmin: "New Admin",
+  newStaffMember: "New Staff Member",
+  newScanner: "New Scanner",
+  createdAt: "Created At",
+  editPassword: "Edit Password",
+  deleteMember: "Delete",
+  rowsPerPage: "Rows per page:",
+  editPasswordFor: "Edit Password for",
+  newPassword: "New Password",
+  atLeast8Characters: "At Least 8 Characters",
+  passwordComplexity: "Password must include at least one uppercase letter, one lowercase letter, and one digit.",
+  confirmNewPassword: "Confirm New Password",
+  resetPassword: "Reset Password",
+  confirmDeletion: "Confirm Deletion",
+  areYouSureDelete: "Are you sure you want to delete",
+  thisActionCannotBeUndone: "This action can't be undone, so please be certain.",
+  createNewAdmin: "Create New Admin",
+  enterFullName: "Enter Full Name",
+  enterYourEmailAddress: "Enter Your Email Address",
+  createAdmin: "Create Admin",
+  createNewScanner: "Create New Scanner",
+  createScanner: "Create Scanner",
+  createNewStaffMember: "Create New Staff Member",
+  sendInvite: "Send Invite",
+  createStaffMember: "Create Staff Member",
+  admin: "Admin",
+  staff: "Staff",
+  scanner: "Scanner",
+  deletedSuccessfully: "Deleted Successfully",
+  failedToDeleteUser: "Failed to delete user",
+  role: "Role",
+  createdSuccessfully: "Created Successfully",
+  member: "Member",
+  failedToCreateAdmin: "Failed to create admin",
+  failedToCreateScanner: "Failed to create scanner",
+  failedToCreateStaffMember: "Failed to create staff member",
+  failedToUpdatePassword: "Failed to update password",
 };
 
 export const arTranslations: Translations = {
@@ -806,6 +970,96 @@ export const arTranslations: Translations = {
   meetingDetailsStep: "تفاصيل الاجتماع",
   dateTimeStep: "التاريخ والوقت",
   confirmationStep: "التأكيد",
+  
+  // AddNewMeeting Page Translations
+  visitorDescription: "وصف الزائر",
+  visitorDescriptionPlaceholder: "يرجى تقديم ما لا يقل عن 20 كلمة تصف الزائر والغرض من الزيارة.",
+  selectMeetingType: "اختر نوع الاجتماع",
+  normalMeeting: "اجتماع عادي",
+  specialMeeting: "اجتماع خاص",
+  standardMeetingRequest: "طلب اجتماع قياسي",
+  specialMeetingRequest: "طلب اجتماع خاص",
+  generalFiles: "الملفات العامة",
+  presentationFiles: "ملفات العرض",
+  introFiles: "ملفات المقدمة",
+  dropGeneralFiles: "أسقط الملفات العامة هنا",
+  dropPresentationFiles: "أسقط ملفات العرض هنا",
+  dropIntroFiles: "أسقط ملفات المقدمة هنا",
+  dragDropGeneral: "اسحب وأسقط الملفات العامة هنا أو انقر للتصفح",
+  dragDropPresentation: "اسحب وأسقط ملفات العرض هنا أو انقر للتصفح",
+  dragDropIntro: "اسحب وأسقط ملفات المقدمة هنا أو انقر للتصفح",
+  uploadedGeneralFiles: "الملفات العامة المحملة:",
+  uploadedPresentationFiles: "ملفات العرض المحملة:",
+  uploadedIntroFiles: "ملفات المقدمة المحملة:",
+  remove: "إزالة",
+  supportedFormats: "الصيغ المدعومة: PDF, DOC, DOCX, JPG, PNG",
+  supportedFormatsPresentation: "الصيغ المدعومة: PDF, PPT, PPTX",
+  supportedFormatsIntro: "الصيغ المدعومة: PDF, DOC, DOCX",
+
+  // Meeting Details Page Translations
+  subject: "الموضوع",
+  purpose: "الغرض",
+  attendeesCount: "عدد الحاضرين",
+  preferredSlot: "الوقت المفضل",
+  confirmedSlot: "الوقت المؤكد",
+  duration: "المدة",
+  priority: "الأولوية",
+  isSpecial: "اجتماع خاص",
+  notesSummary: "ملخص الملاحظات",
+  lastEditRequestMessage: "رسالة آخر طلب تعديل",
+  lastEditRequestedAt: "آخر طلب تعديل في",
+  visitorDescriptionDetails: "وصف الزائر",
+  scheduledByRole: "مجدول بواسطة الدور",
+  requesterInformation: "معلومات الطالب",
+  introFilesDetails: "ملفات المقدمة",
+  presentationFilesDetails: "ملفات العرض",
+  download: "تحميل",
+  view: "عرض",
+  yes: "نعم",
+  no: "لا",
+  minutes: "دقائق",
+
+  // Staff Management Page Translations
+  staffManagement: "إدارة الموظفين",
+  addMember: "إضافة عضو",
+  buttonMenu: "قائمة الأزرار",
+  newAdmin: "مدير جديد",
+  newStaffMember: "عضو طاقم جديد",
+  newScanner: "مدقق جديد",
+  createdAt: "تم الإنشاء في",
+  editPassword: "تعديل كلمة المرور",
+  deleteMember: "حذف",
+  rowsPerPage: "الصفوف في كل صفحة:",
+  editPasswordFor: "تعديل كلمة المرور لـ",
+  newPassword: "كلمة المرور الجديدة",
+  atLeast8Characters: "8 أحرف على الأقل",
+  passwordComplexity: "يجب أن تحتوي كلمة المرور على حرف كبير واحد وحرف صغير واحد ورقم واحد على الأقل.",
+  confirmNewPassword: "تأكيد كلمة المرور الجديدة",
+  resetPassword: "إعادة تعيين كلمة المرور",
+  confirmDeletion: "تأكيد الحذف",
+  areYouSureDelete: "هل أنت متأكد أنك تريد حذف",
+  thisActionCannotBeUndone: "لا يمكن التراجع عن هذا الإجراء، لذا يرجى التأكد.",
+  createNewAdmin: "إنشاء مدير جديد",
+  enterFullName: "أدخل الاسم الكامل",
+  enterYourEmailAddress: "أدخل عنوان بريدك الإلكتروني",
+  createAdmin: "إنشاء مدير",
+  createNewScanner: "إنشاء مدقق جديد",
+  createScanner: "إنشاء مدقق",
+  createNewStaffMember: "إنشاء عضو طاقم جديد",
+  sendInvite: "إرسال دعوة",
+  createStaffMember: "إنشاء عضو طاقم",
+  admin: "مدير",
+  staff: "طاقم",
+  scanner: "مدقق",
+  deletedSuccessfully: "تم الحذف بنجاح",
+  failedToDeleteUser: "فشل في حذف المستخدم",
+  role: "الدور",
+  createdSuccessfully: "تم الإنشاء بنجاح",
+  member: "عضو",
+  failedToCreateAdmin: "فشل في إنشاء المدير",
+  failedToCreateScanner: "فشل في إنشاء المدقق",
+  failedToCreateStaffMember: "فشل في إنشاء عضو الطاقم",
+  failedToUpdatePassword: "فشل في تحديث كلمة المرور",
 };
 
 export const translations: Record<"en" | "ar", Translations> = {

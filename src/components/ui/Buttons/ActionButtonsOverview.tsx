@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import StaffAssignmentModal from "../../Modal/StaffAssignmentModal";
 import RejectionModal from "../../Modal/RejectionModal";
 import ApprovalModal from "../../Modal/ApprovalModal";
+// Import SVG icons using relative paths
+import acceptIcon from '../../../assets/icons/Accept & Assign member.svg';
+import approveIcon from '../../../assets/icons/Primary Button Lg.svg';
+import rejectIcon from '../../../assets/icons/Reject Icon Button.svg';
 
 interface ActionButtonsOverviewProps {
   onAccept: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -67,7 +71,7 @@ export default function ActionButtonsOverview({
           aria-label="Accept"
         >
           <img 
-            src="/src/assets/icons/Accept & Assign member.svg" 
+            src={acceptIcon} 
             alt="Accept" 
             className="w-full h-full"
           />
@@ -80,7 +84,7 @@ export default function ActionButtonsOverview({
           aria-label="Approve"
         >
           <img 
-            src="/src/assets/icons/Primary Button Lg.svg" 
+            src={approveIcon} 
             alt="Approve" 
             className="w-full h-full"
           />
@@ -93,7 +97,7 @@ export default function ActionButtonsOverview({
           aria-label="Reject"
         >
           <img 
-            src="/src/assets/icons/Reject Icon Button.svg" 
+            src={rejectIcon} 
             alt="Reject" 
             className="w-full h-full"
           />

@@ -5,6 +5,7 @@ import MeetingDetails from "../../components/NewMeeting/steps/MeetingDetails";
 import DateTime from "../../components/NewMeeting/steps/DateTime";
 import Confirmation from "../../components/NewMeeting/steps/Confirmation";
 import SpecialConfirmation from "../../components/NewMeeting/steps/SpecialConfirmation";
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface FormData {
   visitor: {
@@ -37,6 +38,7 @@ type SectionKey = keyof FormData;
 const AddNewMeeting: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [meetingType, setMeetingType] = useState<"normal" | "special">("normal");
+  const t = useTranslation();
 
   const [formData, setFormData] = useState<FormData>({
     visitor: {
@@ -124,7 +126,7 @@ const AddNewMeeting: React.FC = () => {
           {/* Meeting Type Selection */}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Select Meeting Type
+              {t.selectMeetingType}
             </h2>
             <div className="flex gap-4">
               <button
@@ -135,9 +137,9 @@ const AddNewMeeting: React.FC = () => {
                     : "border-gray-300 hover:border-gray-400"
                 }`}
               >
-                <div className="font-medium">Normal Meeting</div>
+                <div className="font-medium">{t.normalMeeting}</div>
                 <div className="text-sm text-gray-600 mt-1">
-                  Standard meeting request
+                  {t.standardMeetingRequest}
                 </div>
               </button>
               <button
@@ -148,9 +150,9 @@ const AddNewMeeting: React.FC = () => {
                     : "border-gray-300 hover:border-gray-400"
                 }`}
               >
-                <div className="font-medium">Special Meeting</div>
+                <div className="font-medium">{t.specialMeeting}</div>
                 <div className="text-sm text-gray-600 mt-1">
-                  Special meeting request
+                  {t.specialMeetingRequest}
                 </div>
               </button>
             </div>

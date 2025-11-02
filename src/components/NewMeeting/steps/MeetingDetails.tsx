@@ -123,7 +123,7 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
         {translate(formData.title)}
       </h2>
-      <p className="text-sm text-gray-500 mb-6">Details About Your Meeting Request</p>
+      <p className="text-sm text-gray-500 mb-6">{translate(formData.subTitle)}</p>
 
       <div className="grid grid-cols-1 gap-4 mb-6">
         {formData.form.map((field, index) =>
@@ -148,6 +148,30 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
                     <p className="text-sm text-gray-400">
                        {translate('lettersCount')}
                     </p>
+                  </>
+                ) : inp.key === "reasons" ? (
+                  <>
+                    <Input
+                      type={inp.type}
+                      placeholder={t.meetingReasonsGoalsPlaceholder}
+                      value={meeting.reasons}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setMeeting({ ...meeting, reasons: e.target.value })
+                      }
+                      className="mb-2"
+                    />
+                  </>
+                ) : inp.key === "title" ? (
+                  <>
+                    <Input
+                      type={inp.type}
+                      placeholder={t.meetingTitlePlaceholder}
+                      value={meeting.title}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setMeeting({ ...meeting, title: e.target.value })
+                      }
+                      className="mb-2"
+                    />
                   </>
                 ) : (
                   <Input
@@ -175,7 +199,7 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
 
       {/* General Files */}
       <div className="mb-6">
-        <Label text="General Files" />
+        <Label text={t.generalFiles} />
         <div 
           className={`mb-2 relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
             isDragging && dragType === 'general' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
@@ -217,17 +241,17 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
               ></path>
             </svg>
             <p className="text-gray-600 mb-1">
-              {isDragging && dragType === 'general' ? 'Drop general files here' : 'Drag & drop general files here or click to browse'}
+              {isDragging && dragType === 'general' ? t.dropGeneralFiles : t.dragDropGeneral}
             </p>
             <p className="text-gray-400 text-sm">
-              Supported formats: PDF, DOC, DOCX, JPG, PNG
+              {t.supportedFormats}
             </p>
           </div>
         </div>
 
         {meeting.files.length > 0 && (
           <div className="mb-4">
-            <h4 className="font-medium text-gray-700 mb-2">Uploaded General Files:</h4>
+            <h4 className="font-medium text-gray-700 mb-2">{t.uploadedGeneralFiles}</h4>
             <ul className="space-y-2">
               {meeting.files.map((file, index) => (
                 <li key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
@@ -237,7 +261,7 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
                     className="text-red-500 hover:text-red-700"
                     onClick={() => removeFile(index, 'general')}
                   >
-                    Remove
+                    {t.remove}
                   </button>
                 </li>
               ))}
@@ -248,7 +272,7 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
 
       {/* Presentation Files */}
       <div className="mb-6">
-        <Label text="Presentation Files" />
+        <Label text={t.presentationFiles} />
         <div 
           className={`mb-2 relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
             isDragging && dragType === 'presentation' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
@@ -290,17 +314,17 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
               ></path>
             </svg>
             <p className="text-gray-600 mb-1">
-              {isDragging && dragType === 'presentation' ? 'Drop presentation files here' : 'Drag & drop presentation files here or click to browse'}
+              {isDragging && dragType === 'presentation' ? t.dropPresentationFiles : t.dragDropPresentation}
             </p>
             <p className="text-gray-400 text-sm">
-              Supported formats: PDF, PPT, PPTX
+              {t.supportedFormatsPresentation}
             </p>
           </div>
         </div>
 
         {meeting.presentationFiles.length > 0 && (
           <div className="mb-4">
-            <h4 className="font-medium text-gray-700 mb-2">Uploaded Presentation Files:</h4>
+            <h4 className="font-medium text-gray-700 mb-2">{t.uploadedPresentationFiles}</h4>
             <ul className="space-y-2">
               {meeting.presentationFiles.map((file, index) => (
                 <li key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
@@ -310,7 +334,7 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
                     className="text-red-500 hover:text-red-700"
                     onClick={() => removeFile(index, 'presentation')}
                   >
-                    Remove
+                    {t.remove}
                   </button>
                 </li>
               ))}
@@ -321,7 +345,7 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
 
       {/* Intro Files */}
       <div className="mb-6">
-        <Label text="Intro Files" />
+        <Label text={t.introFiles} />
         <div 
           className={`mb-2 relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
             isDragging && dragType === 'intro' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
@@ -363,17 +387,17 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
               ></path>
             </svg>
             <p className="text-gray-600 mb-1">
-              {isDragging && dragType === 'intro' ? 'Drop intro files here' : 'Drag & drop intro files here or click to browse'}
+              {isDragging && dragType === 'intro' ? t.dropIntroFiles : t.dragDropIntro}
             </p>
             <p className="text-gray-400 text-sm">
-              Supported formats: PDF, DOC, DOCX
+              {t.supportedFormatsIntro}
             </p>
           </div>
         </div>
 
         {meeting.introFiles.length > 0 && (
           <div className="mb-4">
-            <h4 className="font-medium text-gray-700 mb-2">Uploaded Intro Files:</h4>
+            <h4 className="font-medium text-gray-700 mb-2">{t.uploadedIntroFiles}</h4>
             <ul className="space-y-2">
               {meeting.introFiles.map((file, index) => (
                 <li key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
@@ -383,7 +407,7 @@ const MeetingDetails: React.FC<MeetingDetailsProps> = ({
                     className="text-red-500 hover:text-red-700"
                     onClick={() => removeFile(index, 'intro')}
                   >
-                    Remove
+                    {t.remove}
                   </button>
                 </li>
               ))}

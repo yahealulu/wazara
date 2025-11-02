@@ -24,7 +24,7 @@ export default function NavLinkAdmin({ isCollapsed = false }: NavLinkAdminProps)
     { name: t.upcomingMeetings, path: "/admin/admin/upcoming", icon: <BiCalendar size={20} /> },
     { name: t.previousMeetings, path: "/admin/admin/previous", icon: <LuCalendarClock size={20} /> },
     { name: t.visitorsCheckIns, path: "/admin/admin/visitors", icon: <BiLogIn size={18} /> },
-    { name: "Staff Management", path: "/admin/admin/staff", icon: <FaUsers size={20} /> },
+    { name: t.staffManagement, path: "/admin/admin/staff", icon: <FaUsers size={20} /> },
   ];
   
   return (
